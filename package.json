@@ -1,0 +1,11 @@
+{
+  "name": "ncgen",
+  "version": "1.0.0",
+  "repository": "https://github.com/daniel-dx/ncgen.git",
+  "author": "daniel.xiao <dxweixiao@tencent.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}

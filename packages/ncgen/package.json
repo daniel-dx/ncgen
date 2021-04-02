@@ -1,0 +1,21 @@
+{
+  "name": "ncgen",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "ncgen": "./bin/ncgen"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^7.2.0",
+    "debug": "^4.3.1",
+    "degit": "^2.8.0",
+    "del": "^6.0.0",
+    "esm": "^3.2.25",
+    "fs-extra": "^9.1.0",
+    "glob": "^7.1.6",
+    "inquirer": "^8.0.0",
+    "lodash": "^4.17.21"
+  }
+}
