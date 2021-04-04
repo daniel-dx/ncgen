@@ -1,6 +1,13 @@
 export default {
   // 主命令，用于生成项目脚手架
   main: {
+
+    // welcome: 'haha',
+    welcome: function() {
+      // 如果不想使用默认的输出，可返回空(return or return null or return false)，然后自己处理
+      return 'Welcome to demo code generator'
+    },
+
     // 提问问题。参考：https://github.com/SBoudrias/Inquirer.js/#question
     prompt: [
       {
