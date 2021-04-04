@@ -29,3 +29,24 @@ export function transformStr(str) {
       .join(" "), // "Demo name"
   };
 }
+
+/**
+ * 可指定多个替换规则的替换方法
+ * @param content 被替换的内容
+ * @param rules 多个替换规则 {[替换规则]: [替换后的新内容]} or [['替换规则', '替换后的新内容']]
+ */
+export function replace(content, rules) {
+  let result = content;
+  if (_.isArray(rules)) {
+    rules.forEach((item) => {
+      const [rule, val] = item;
+      result = result.replace(new RegExp(rule), val);
+    });
+  } else if (_.isObject(rules)) {
+    Object.keys(rules).forEach((rule) => {
+      result = result.replace(new RegExp(rule), rules[rule]);
+    });
+  }
+
+  return result;
+}

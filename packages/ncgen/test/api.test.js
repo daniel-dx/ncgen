@@ -1,6 +1,6 @@
 // require = require("esm")(module /*, options*/);
 
-const { transformStr } = require("../src/api");
+const { transformStr, replace } = require("../src/api");
 
 test("transformStr", () => {
   const inputs = [
@@ -20,4 +20,18 @@ test("transformStr", () => {
       humanized: "Demo name",
     });
   });
+});
+
+test("replace", () => {
+  const content = "ncgen is a very niice coded generator";
+  const result = replace(content, {
+    "\\sniice\\s": " nice ",
+    coded: "code",
+  });
+  const result1 = replace(content, [
+    [/\sniice\s/, " nice "],
+    ["coded", "code"],
+  ]);
+  expect(result).toBe("ncgen is a very nice code generator");
+  expect(result1).toBe("ncgen is a very nice code generator");
 });

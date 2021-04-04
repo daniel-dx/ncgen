@@ -1,11 +1,12 @@
+import { api as ncgenApi } from "ncgen";
+
 export default {
   // 主命令，用于生成项目脚手架
   main: {
-
-    // welcome: 'haha',
-    welcome: function() {
+    // welcome: 'Welcome to demo code generator',
+    welcome: function () {
       // 如果不想使用默认的输出，可返回空(return or return null or return false)，然后自己处理
-      return 'Welcome to demo code generator'
+      return "Welcome to demo code generator";
     },
 
     // 提问问题。参考：https://github.com/SBoudrias/Inquirer.js/#question
@@ -17,14 +18,16 @@ export default {
       },
     ],
 
-    // 模板来源
-    // tmplSource: "daniel-dx/vue3-ncgen-demo",
+    // 模板来源。参考：https://github.com/Rich-Harris/degit
     tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
 
     // 更新文件。文件路径支持glob匹配：https://github.com/isaacs/node-glob#glob-primer
     updateFiles: {
       "package.json": function (content, answers, options) {
-        content = content.replace("vue3-ncgen-demo", answers.projectName);
+        const projectNameObj = ncgenApi.transformStr(answers.projectName);
+        content = ncgenApi.replace(content, {
+          "vue3-ncgen-demo": projectNameObj.kebabCase,
+        });
         return content;
       },
     },
@@ -32,11 +35,19 @@ export default {
     // 删除文件。文件路径支持glob匹配：https://github.com/isaacs/node-glob#glob-primer
     removeFiles: ["vite.config.js", "src/**/*.png"],
 
-    // 结束提示信息
-    endMessage: "Congratulations, the operation is successful",
-    // endMessage: function(answers) {
-    //   return ''
-    // }
+    // 安装依赖
+    installDependencies: {
+      skip: false,
+      tips: 'Dependencies are being installed, it may take a few minutes',
+      command: 'npm i'
+    },
+
+    // 完成提示信息
+    // complete: "Congratulations, the operation is successful",
+    complete: function(answers) {
+      // 如果不想使用默认的输出，可返回空(return or return null or return false)，然后自己处理
+      return 'Congratulations, the operation is successful'
+    }
   },
 
   // 子命令，用于插入片段代码
