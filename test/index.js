@@ -38,46 +38,80 @@ export default {
     // 安装依赖
     installDependencies: {
       skip: false,
-      tips: 'Dependencies are being installed, it may take a few minutes',
-      command: 'npm i'
+      tips: "Dependencies are being installed, it may take a few minutes",
+      command: "npm i",
     },
 
     // 完成提示信息
     // complete: "Congratulations, the operation is successful",
-    complete: function(answers) {
+    complete: function (answers) {
       // 如果不想使用默认的输出，可返回空(return or return null or return false)，然后自己处理
-      return 'Congratulations, the operation is successful'
-    }
+      return "Congratulations, the operation is successful";
+    },
   },
 
   // 子命令，用于插入片段代码
   sub: {
     // key 为子命令名
-    "add-api": {
+    "add-component": {
       // 提问问题。参考：https://github.com/SBoudrias/Inquirer.js/#question
-      prompt: [],
+      prompt: [
+        {
+          type: "list",
+          choices: function () {
+            return ncgenApi.listDirs("src/");
+          },
+          name: "targetDir",
+          message: "What is the author's name",
+        },
+        {
+          type: "input",
+          name: "compName",
+          message: "What is the component name?",
+          validate: function (input) {
+            if (!input) return "Please provide component name";
+            return true;
+          },
+        },
+      ],
 
       // 模板来源
-      tmplSource: "",
+      tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
 
       // 插入位置
-      // addFilesTo: "",
       addFilesTo: {
-        "/file-a": "path/a",
-        "/dir/*": "path/b",
+        // 模板项目的文件路径: 实际项目的文件路径
+        "src/components/HelloWorld.vue": function (answers) {
+          return `src/${answers.targetDir}/${
+            ncgenApi.transformStr(answers.compName).upperFirstCamelCase
+          }.vue`;
+        },
+        "src/components": `src/assets/bb`,
       },
 
       // 直接新增文件。
-      addFiles: {
-        "path/to/file-a": function () {
-          return "some content";
-        },
+      addFiles: function (answers) {
+        return {
+          "src/assets/test.txt": function (answers) {
+            return "some content";
+          },
+        };
       },
 
       // 更新文件。文件路径支持glob匹配：https://github.com/isaacs/node-glob#glob-primer
-      updateFiles: {
-        "path/to/file-a": function (files) {},
-        "path/to/dir/*": function (files) {},
+      updateFiles: function (answers) {
+        const compNameObj = ncgenApi.transformStr(answers.compName);
+        return {
+          [`src/${answers.targetDir}/${compNameObj.upperFirstCamelCase}.vue`]: function (
+            content,
+            answers,
+            options
+          ) {
+            return ncgenApi.replace(content, {
+              "HelloWorld.vue": compNameObj.upperFirstCamelCase,
+            });
+          },
+        };
       },
 
       // 删除文件。文件路径支持glob匹配：https://github.com/isaacs/node-glob#glob-primer

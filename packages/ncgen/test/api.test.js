@@ -1,6 +1,7 @@
 // require = require("esm")(module /*, options*/);
 
-const { transformStr, replace } = require("../src/api");
+const path = require("path");
+const { transformStr, replace, listDirs } = require("../src/api");
 
 test("transformStr", () => {
   const inputs = [
@@ -34,4 +35,19 @@ test("replace", () => {
   ]);
   expect(result).toBe("ncgen is a very nice code generator");
   expect(result1).toBe("ncgen is a very nice code generator");
+});
+
+test("listDirs", () => {
+  const rootPath = path.resolve(__dirname, "../");
+  const dirs = listDirs(rootPath);
+  expect(dirs).toEqual(["bin", "node_modules", "src", "test"]);
+
+  const dirs1 = listDirs(rootPath, ["bin", "node.*"]);
+  expect(dirs1).toEqual(["src", "test"]);
+
+  const dirs2 = listDirs(
+    rootPath,
+    (dir) => ["node_modules", "bin"].indexOf(dir) >= 0
+  );
+  expect(dirs2).toEqual(["src", "test"]);
 });

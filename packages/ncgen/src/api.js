@@ -1,4 +1,7 @@
 import _ from "lodash";
+import path from "path";
+import fs from "fs-extra";
+import { getProjectRootPath } from "./context";
 
 /**
  * 例子：transformStr('demo-name') or transformStr('demoName') or transformStr('DemoName') or transformStr('Demo Name') or transformStr('Demo name')
@@ -49,4 +52,19 @@ export function replace(content, rules) {
   }
 
   return result;
+}
+
+export function listDirs(dirPath, excludes) {
+  const targetDir = path.resolve(getProjectRootPath(), dirPath);
+  let allDirs = fs
+    .readdirSync(targetDir)
+    .filter((name) => fs.statSync(path.resolve(targetDir, name)).isDirectory());
+  if (_.isArray(excludes)) {
+    allDirs = allDirs.filter(
+      (dir) => !excludes.some((eItem) => new RegExp(eItem).test(dir))
+    );
+  } else if (_.isFunction(excludes)) {
+    allDirs = allDirs.filter((dir) => !excludes(dir));
+  }
+  return allDirs;
 }

@@ -7,24 +7,19 @@ import fs from "fs-extra";
 import del from "del";
 import _ from "lodash";
 import axios from "axios";
-import os from "os";
 import md5 from "md5";
 import execa from "execa";
 import ora from "ora";
 
 import { debug, log } from "./utils";
-import { transformStr } from "./api";
 import pkg from "../package.json";
-
-const ncgenHome = path.resolve(os.homedir(), ".ncgen");
-
-let _answers = {
-  projectName: "",
-};
-
-function getProjectRootPath() {
-  return path.resolve(".", transformStr(_answers.projectName)["kebabCase"]);
-}
+import {
+  getProjectRootPath,
+  answers as _answers,
+  data,
+  getLocationOfTheProjectClone,
+  homePath,
+} from "./context";
 
 function cloneResource(tmplSource, isTemp = false) {
   const spinner = ora("Downloading").start();
@@ -41,35 +36,42 @@ function cloneResource(tmplSource, isTemp = false) {
 
     const destPath = path.resolve(
       getProjectRootPath(),
-      isTemp ? ".__temp" : ""
+      isTemp ? getLocationOfTheProjectClone() : ""
     );
     emitter.clone(destPath).then(() => {
-      spinner.stop()
+      spinner.stop();
       resolve("done");
     });
   });
 }
 
 function prompt(promptConfig) {
-  const _promptConfig = [
-    {
+  const _promptConfig = [...promptConfig];
+  if (!data.isSub) {
+    _promptConfig.splice(0, 0, {
       type: "input",
       name: "projectName",
       message: "What's your project name",
-    },
-    ...promptConfig,
-  ];
+      validate: function (input) {
+        if (!input) return "Please provide project name";
+        return true;
+      },
+    });
+  }
   return inquirer.prompt(_promptConfig).then((answers) => {
-    _answers = answers;
+    Object.assign(_answers, answers);
     debug(_answers);
   });
 }
 
 function updateFiles(filesConfig) {
+  const _filesConfig = _.isFunction(filesConfig)
+    ? filesConfig(_answers)
+    : filesConfig;
   return Promise.all(
-    Object.keys(filesConfig).map((filePath) => {
+    Object.keys(_filesConfig).map((filePath) => {
       const files = glob.sync(path.resolve(getProjectRootPath(), filePath));
-      const handleFn = filesConfig[filePath];
+      const handleFn = _filesConfig[filePath];
       return Promise.race(
         files.map(async (filePath) => {
           const content = await fs.readFile(filePath, "utf-8");
@@ -108,10 +110,18 @@ function complete(completeMsg) {
 }
 
 function checkConfig(config) {
-  if (!config.tmplSource) throw "main.tmplSource must not be null";
+  if (!data.isSub && !config.tmplSource)
+    throw "main.tmplSource must not be null";
+
+  const found = (config.prompt || []).find(
+    (item) => item.name === "projectName"
+  );
+  if (found) {
+    throw "projectName is a built-in prompt item name and cannot be used, please replace one";
+  }
 }
 
-function welcome(welcomeMsg) {
+function welcome(welcomeMsg, genConfig) {
   let msg = "";
   if (_.isFunction(welcomeMsg)) {
     msg = welcomeMsg();
@@ -121,6 +131,13 @@ function welcome(welcomeMsg) {
 
   if (msg) {
     log.warn(msg);
+  }
+
+  // 追加可用子命令信息
+  if (genConfig.sub) {
+    const subcommands = Object.keys(genConfig.sub);
+    if (subcommands.length > 0)
+      log.warn(`Valid subcommands: ${subcommands.join(", ")}`);
   }
 }
 
@@ -144,7 +161,7 @@ async function installDependencies(installDeptConfig) {
   spinner.stop();
 }
 
-async function handleMain(config) {
+async function handleMain(config, genConfig) {
   debug(config);
 
   try {
@@ -152,7 +169,7 @@ async function handleMain(config) {
     await checkConfig(config);
 
     // 欢迎信息
-    await welcome(config.welcome);
+    await welcome(config.welcome, genConfig);
 
     // 提示信息
     await prompt(config.prompt);
@@ -176,12 +193,50 @@ async function handleMain(config) {
   }
 }
 
-function addFilesTo() {}
+async function addFilesTo(addFilesToConfig) {
+  await Promise.all(
+    _.map(addFilesToConfig, (val, key) => {
+      if (_.isFunction(val)) {
+        return fs.copy(
+          path.resolve(getLocationOfTheProjectClone(), key),
+          path.resolve(getProjectRootPath(), val(_answers))
+        );
+      } else if (_.isString(val)) {
+        return fs.copy(
+          path.resolve(getLocationOfTheProjectClone(), key),
+          path.resolve(getProjectRootPath(), val)
+        );
+      }
+      return;
+    })
+  );
+  return fs.remove(getLocationOfTheProjectClone());
+}
+
+async function addFiles(addFilesConfig) {
+  const _addFilesConfig = _.isFunction(addFilesConfig)
+    ? addFilesConfig(_answers)
+    : addFilesConfig;
+
+  return Promise.all(
+    _.map(_addFilesConfig, (val, toPath) => {
+      const content = _.isFunction(val) ? val(_answers) : val;
+      return fs.writeFile(
+        path.resolve(getProjectRootPath(), toPath),
+        content,
+        "utf8"
+      );
+    })
+  );
+}
 
 async function handleSubcommand(config) {
   debug(config);
 
   try {
+    // 检查配置
+    await checkConfig(config);
+
     // 提示信息
     await prompt(config.prompt);
 
@@ -190,6 +245,9 @@ async function handleSubcommand(config) {
       await cloneResource(config.tmplSource, true);
       await addFilesTo(config.addFilesTo);
     }
+
+    // 动态增加文件
+    await addFiles(config.addFiles);
 
     // 修改文件内容
     await updateFiles(config.updateFiles);
@@ -201,11 +259,16 @@ async function handleSubcommand(config) {
     await complete(config.complete);
   } catch (e) {
     log.error(e);
+    log.warn(
+      "Please make sure to execute this subcommand in the project root directory"
+    );
+    log.warn(`Current path is: ${process.cwd()}`);
   }
 }
 
 function initHomeDir() {
-  fs.ensureDirSync(path.resolve(ncgenHome, "configuration"));
+  fs.ensureDirSync(path.resolve(homePath, "configuration"));
+  fs.ensureDirSync(path.resolve(homePath, "temp_clone"));
 }
 
 export async function cli(args) {
@@ -224,7 +287,6 @@ Examples:
 $ ncgen /path/to/ncgen-config.js
 $ ncgen https://<host path>/ncgen-config.js
 ----------------------------------------
-Use 'ncgen <configuration file path> -h' to see the all valid subcommands
 
 - Subcommand to insert or modify project files
 $ ncgen <configuration file path>::<subcommand>
@@ -252,7 +314,7 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
     const res = await axios.get(genConfigUrl);
     const content = res.data;
     const filePath = path.resolve(
-      ncgenHome,
+      homePath,
       "configuration",
       md5(content) + ".js"
     );
@@ -275,11 +337,13 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
       return;
     }
     // 子命令模式
+    data.isSub = true;
     handleSubcommand(commandConfig);
     return;
   }
 
   // 执行主命令，即生成项目脚手架
-  const { main: config } = genConfig.default || genConfig;
-  handleMain(config);
+  const _genConfig = genConfig.default || genConfig;
+  const { main: config } = _genConfig;
+  handleMain(config, _genConfig);
 }

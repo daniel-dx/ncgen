@@ -1,5 +1,6 @@
 import _debug from "debug";
 import chalk from "chalk";
+import _ from "lodash";
 
 const debugLog = _debug("ncgen");
 
