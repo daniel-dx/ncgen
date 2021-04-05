@@ -1,6 +1,40 @@
 # ncgen
 A very nice code generator
 
+## 基本的结构
+
+```js
+export default {
+  main: {
+    welcome: '',
+    prompt: [{}],
+    tmplSource: '',
+    updateFiles: {
+      '': function(content, options) {}
+    },
+    removeFiles: [''],
+    installDependencies: {},
+    complete: ''
+  },
+  sub: {
+    'command-name': {
+      prompt: [],
+      tmplSource: '',
+      addFilesTo: {
+        '': ''
+      },
+      addFiles: {
+        '': ''
+      },
+      updateFiles: {
+        '': function(content, options) {}
+      },
+      removeFiles: [],
+      complete: ''
+    }
+  }
+}
+```
 
 ## 一些记录
 

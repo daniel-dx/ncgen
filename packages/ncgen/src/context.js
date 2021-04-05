@@ -12,6 +12,12 @@ export const data = {
   isSub: false,
 };
 
+export function getFnContext() {
+  return {
+    $answers: answers,
+  };
+}
+
 export function getProjectRootPath() {
   return path.resolve(
     ".",

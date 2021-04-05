@@ -3,7 +3,6 @@ import { api as ncgenApi } from "ncgen";
 export default {
   // 主命令，用于生成项目脚手架
   main: {
-    // welcome: 'Welcome to demo code generator',
     welcome: function () {
       // 如果不想使用默认的输出，可返回空(return or return null or return false)，然后自己处理
       return "Welcome to demo code generator";
@@ -23,8 +22,8 @@ export default {
 
     // 更新文件。文件路径支持glob匹配：https://github.com/isaacs/node-glob#glob-primer
     updateFiles: {
-      "package.json": function (content, answers, options) {
-        const projectNameObj = ncgenApi.transformStr(answers.projectName);
+      "package.json": function (content, options) {
+        const projectNameObj = ncgenApi.transformStr(this.$answers.projectName);
         content = ncgenApi.replace(content, {
           "vue3-ncgen-demo": projectNameObj.kebabCase,
         });
@@ -44,7 +43,7 @@ export default {
 
     // 完成提示信息
     // complete: "Congratulations, the operation is successful",
-    complete: function (answers) {
+    complete: function () {
       // 如果不想使用默认的输出，可返回空(return or return null or return false)，然后自己处理
       return "Congratulations, the operation is successful";
     },
@@ -81,7 +80,8 @@ export default {
       // 插入位置
       addFilesTo: {
         // 模板项目的文件路径: 实际项目的文件路径
-        "src/components/HelloWorld.vue": function (answers) {
+        "src/components/HelloWorld.vue": function () {
+          const answers = this.$answers;
           return `src/${answers.targetDir}/${
             ncgenApi.transformStr(answers.compName).upperFirstCamelCase
           }.vue`;
@@ -90,21 +90,21 @@ export default {
       },
 
       // 直接新增文件。
-      addFiles: function (answers) {
+      addFiles: function () {
         return {
-          "src/assets/test.txt": function (answers) {
+          "src/assets/test.txt": function () {
             return "some content";
           },
         };
       },
 
       // 更新文件。文件路径支持glob匹配：https://github.com/isaacs/node-glob#glob-primer
-      updateFiles: function (answers) {
+      updateFiles: function () {
+        const answers = this.$answers;
         const compNameObj = ncgenApi.transformStr(answers.compName);
         return {
           [`src/${answers.targetDir}/${compNameObj.upperFirstCamelCase}.vue`]: function (
             content,
-            answers,
             options
           ) {
             return ncgenApi.replace(content, {
@@ -118,7 +118,7 @@ export default {
       removeFiles: ["path/to/file-b", "path/to/rmdir/*"],
 
       // 结束提示信息
-      endMessage: "",
+      complete: "",
     },
     "add-modal": {},
   },

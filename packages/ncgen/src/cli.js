@@ -19,6 +19,7 @@ import {
   data,
   getLocationOfTheProjectClone,
   homePath,
+  getFnContext,
 } from "./context";
 
 function cloneResource(tmplSource, isTemp = false) {
@@ -65,17 +66,14 @@ function prompt(promptConfig) {
 }
 
 function updateFiles(filesConfig) {
-  const _filesConfig = _.isFunction(filesConfig)
-    ? filesConfig(_answers)
-    : filesConfig;
   return Promise.all(
-    Object.keys(_filesConfig).map((filePath) => {
+    Object.keys(filesConfig).map((filePath) => {
       const files = glob.sync(path.resolve(getProjectRootPath(), filePath));
-      const handleFn = _filesConfig[filePath];
+      const handleFn = filesConfig[filePath];
       return Promise.race(
         files.map(async (filePath) => {
           const content = await fs.readFile(filePath, "utf-8");
-          const updatedContent = await handleFn(content, _answers, {
+          const updatedContent = await handleFn.call(getFnContext(), content, {
             absolutePath: filePath,
             relativePath: filePath.replace(getProjectRootPath() + path.sep, ""),
           });
@@ -95,14 +93,10 @@ function removeFiles(files = []) {
 }
 
 function complete(completeMsg) {
-  let msg = `Congratulations, the operation is successful!`;
-  if (completeMsg) {
-    if (_.isString(completeMsg)) {
-      msg = completeMsg;
-    } else if (_.isFunction(completeMsg)) {
-      msg = completeMsg(_answers);
-    }
-  }
+  let msg =
+    completeMsg === undefined
+      ? `Congratulations, the operation is successful!`
+      : completeMsg;
 
   if (msg) {
     log.success(msg);
@@ -113,7 +107,7 @@ function checkConfig(config) {
   if (!data.isSub && !config.tmplSource)
     throw "main.tmplSource must not be null";
 
-  const found = (config.prompt || []).find(
+  const found = (resolveValue(config.prompt) || []).find(
     (item) => item.name === "projectName"
   );
   if (found) {
@@ -122,15 +116,8 @@ function checkConfig(config) {
 }
 
 function welcome(welcomeMsg, genConfig) {
-  let msg = "";
-  if (_.isFunction(welcomeMsg)) {
-    msg = welcomeMsg();
-  } else if (_.isString(welcomeMsg)) {
-    msg = welcomeMsg;
-  }
-
-  if (msg) {
-    log.warn(msg);
+  if (welcomeMsg) {
+    log.warn(welcomeMsg);
   }
 
   // 追加可用子命令信息
@@ -139,6 +126,10 @@ function welcome(welcomeMsg, genConfig) {
     if (subcommands.length > 0)
       log.warn(`Valid subcommands: ${subcommands.join(", ")}`);
   }
+}
+
+function resolveValue(val) {
+  return _.isFunction(val) ? val.call(getFnContext()) : val;
 }
 
 async function installDependencies(installDeptConfig) {
@@ -161,6 +152,31 @@ async function installDependencies(installDeptConfig) {
   spinner.stop();
 }
 
+async function addFilesTo(addFilesToConfig) {
+  await Promise.all(
+    _.map(addFilesToConfig, (val, key) => {
+      return fs.copy(
+        path.resolve(getLocationOfTheProjectClone(), key),
+        path.resolve(getProjectRootPath(), resolveValue(val))
+      );
+    })
+  );
+  return fs.remove(getLocationOfTheProjectClone());
+}
+
+async function addFiles(addFilesConfig) {
+  return Promise.all(
+    _.map(addFilesConfig, (val, toPath) => {
+      const content = resolveValue(val);
+      return fs.writeFile(
+        path.resolve(getProjectRootPath(), toPath),
+        content,
+        "utf8"
+      );
+    })
+  );
+}
+
 async function handleMain(config, genConfig) {
   debug(config);
 
@@ -169,65 +185,28 @@ async function handleMain(config, genConfig) {
     await checkConfig(config);
 
     // 欢迎信息
-    await welcome(config.welcome, genConfig);
+    await welcome(resolveValue(config.welcome), genConfig);
 
     // 提示信息
-    await prompt(config.prompt);
+    await prompt(resolveValue(config.prompt));
 
     // clone 资源
-    await cloneResource(config.tmplSource);
+    await cloneResource(resolveValue(config.tmplSource));
 
     // 修改文件内容
-    await updateFiles(config.updateFiles);
+    await updateFiles(resolveValue(config.updateFiles));
 
     // 删除文件
-    await removeFiles(config.removeFiles);
+    await removeFiles(resolveValue(config.removeFiles));
 
     // 安装依赖
-    await installDependencies(config.installDependencies);
+    await installDependencies(resolveValue(config.installDependencies));
 
     // 结束提示
-    await complete(config.complete);
+    await complete(resolveValue(config.complete));
   } catch (e) {
     log.error(e);
   }
-}
-
-async function addFilesTo(addFilesToConfig) {
-  await Promise.all(
-    _.map(addFilesToConfig, (val, key) => {
-      if (_.isFunction(val)) {
-        return fs.copy(
-          path.resolve(getLocationOfTheProjectClone(), key),
-          path.resolve(getProjectRootPath(), val(_answers))
-        );
-      } else if (_.isString(val)) {
-        return fs.copy(
-          path.resolve(getLocationOfTheProjectClone(), key),
-          path.resolve(getProjectRootPath(), val)
-        );
-      }
-      return;
-    })
-  );
-  return fs.remove(getLocationOfTheProjectClone());
-}
-
-async function addFiles(addFilesConfig) {
-  const _addFilesConfig = _.isFunction(addFilesConfig)
-    ? addFilesConfig(_answers)
-    : addFilesConfig;
-
-  return Promise.all(
-    _.map(_addFilesConfig, (val, toPath) => {
-      const content = _.isFunction(val) ? val(_answers) : val;
-      return fs.writeFile(
-        path.resolve(getProjectRootPath(), toPath),
-        content,
-        "utf8"
-      );
-    })
-  );
 }
 
 async function handleSubcommand(config) {
@@ -238,25 +217,25 @@ async function handleSubcommand(config) {
     await checkConfig(config);
 
     // 提示信息
-    await prompt(config.prompt);
+    await prompt(resolveValue(config.prompt));
 
     // clone 资源
     if (config.tmplSource) {
-      await cloneResource(config.tmplSource, true);
-      await addFilesTo(config.addFilesTo);
+      await cloneResource(resolveValue(config.tmplSource), true);
+      await addFilesTo(resolveValue(config.addFilesTo));
     }
 
     // 动态增加文件
-    await addFiles(config.addFiles);
+    await addFiles(resolveValue(config.addFiles));
 
     // 修改文件内容
-    await updateFiles(config.updateFiles);
+    await updateFiles(resolveValue(config.updateFiles));
 
     // 删除文件
-    await removeFiles(config.removeFiles);
+    await removeFiles(resolveValue(config.removeFiles));
 
     // 结束提示
-    await complete(config.complete);
+    await complete(resolveValue(config.complete));
   } catch (e) {
     log.error(e);
     log.warn(
