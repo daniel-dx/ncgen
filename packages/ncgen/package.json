@@ -1,8 +1,11 @@
 {
   "name": "ncgen",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "src/index.js",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "ncgen": "./bin/ncgen"
   },
@@ -24,7 +27,8 @@
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "ora": "^5.4.0",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.16",
+    "update-notifier": "^5.1.0"
   },
   "devDependencies": {
     "jest": "^26.6.3",

@@ -10,6 +10,7 @@ import axios from "axios";
 import md5 from "md5";
 import execa from "execa";
 import ora from "ora";
+import updateNotifier from "update-notifier";
 
 import { debug, log } from "./utils";
 import pkg from "../package.json";
@@ -251,6 +252,8 @@ function initHomeDir() {
 }
 
 export async function cli(args) {
+  checkVersion();
+
   initHomeDir();
 
   program.version(pkg.version, "-V, --version").usage(
@@ -325,4 +328,12 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
   const _genConfig = genConfig.default || genConfig;
   const { main: config } = _genConfig;
   handleMain(config, _genConfig);
+}
+
+function checkVersion() {
+  const notifier = updateNotifier({ pkg, updateCheckInterval: 0 });
+
+  if (notifier.update) {
+    notifier.notify();
+  }
 }
