@@ -27,6 +27,7 @@
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "ora": "^5.4.0",
+    "require-text": "^0.0.1",
     "shortid": "^2.2.16",
     "update-notifier": "^5.1.0"
   },

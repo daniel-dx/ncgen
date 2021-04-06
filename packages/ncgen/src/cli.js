@@ -11,6 +11,7 @@ import md5 from "md5";
 import execa from "execa";
 import ora from "ora";
 import updateNotifier from "update-notifier";
+import requireText from "require-text";
 
 import { debug, log } from "./utils";
 import pkg from "../package.json";
@@ -276,11 +277,34 @@ $ ncgen <configuration file path>::<subcommand>
 Examples:
 $ ncgen /path/to/ncgen-config.js::add-api
 $ ncgen https://<domain>/ncgen-config.js::add-api
--------------------------------------------------`
+-------------------------------------------------
+Use ncgen <configuration file path>::help to see all valid subcommands`
   );
+
+  program
+    .command("genConf")
+    .description("Generate configuration file")
+    .option("-n --name <name>", "Configuration file name")
+    .action(function (option) {
+      let name = option.name || "ncgen-config.js";
+      name = name.search(/\.js$/) === -1 ? name + ".js" : name;
+      fs.writeFileSync(
+        path.resolve(".", name),
+        requireText("./config-template.js", require),
+        "utf8"
+      );
+      log.success(`Generated successfully: ${name}`);
+    });
+
+  program.on("command:*", function () {
+    debug("Avoid using <configuration file path> as an unknow command");
+  });
+
   program.parse(args);
 
   const [genConfigUrl, subCommand] = _.get(program.args, "[0]", "").split("::");
+
+  if (["genConf"].indexOf(genConfigUrl) >= 0) return;
 
   if (!genConfigUrl) {
     log.warn(
@@ -292,30 +316,42 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
   // 获取代码生成配置文件
   let genConfig;
   const isRemoteUrl = /http[s]?:\/\/.*/.test(genConfigUrl);
+  let genConfigContent = "";
   if (isRemoteUrl) {
     const res = await axios.get(genConfigUrl);
-    const content = res.data;
-    const filePath = path.resolve(
-      homePath,
-      "configuration",
-      md5(content) + ".js"
-    );
-    if (!fs.existsSync(filePath)) {
-      fs.writeFileSync(filePath, content, "utf8");
-    }
-    genConfig = require(filePath);
+    genConfigContent = res.data;
   } else {
-    genConfig = require(genConfigUrl);
+    genConfigContent = requireText(genConfigUrl, require);
   }
+  const filePath = path.resolve(
+    homePath,
+    "configuration",
+    md5(genConfigContent) + ".js"
+  );
+  if (!fs.existsSync(filePath)) {
+    const { stdout: globalNodeModulesPath } = execa.commandSync("npm root -g");
+    // 将 import "ncgen" 替换成引用全局的模块路径
+    genConfigContent = genConfigContent.replace(
+      /from\s+['"](ncgen)['"]/,
+      `from "${globalNodeModulesPath}/$1"`
+    );
+    fs.writeFileSync(filePath, genConfigContent, "utf8");
+  }
+  genConfig = require(filePath);
 
   // 执行子命令，即插入代码片段
   if (subCommand) {
     const { sub: config } = genConfig.default || genConfig;
     const commandConfig = config[subCommand];
     if (!commandConfig) {
-      log.error(`${subCommand} is not a valid subcommand`);
+      if (subCommand !== "help")
+        log.error(`${subCommand} is not a valid subcommand`);
       log.info("Valid subcommands:");
-      log.success(Object.keys(config));
+      log.success(`
+${Object.keys(config).map(key => {
+  return `- ${key}\n${config[key].description || ''}`
+})}
+      `);
       return;
     }
     // 子命令模式
