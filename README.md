@@ -41,6 +41,45 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
 
 Refer to [config-template.js](https://github.com/daniel-dx/ncgen/blob/master/packages/ncgen/src/config-template.js)
 
+## Answer value
+
+The prop value can be a function. In the function, the value of answer can be obtained through `this.$answers`. Each string type answer has a prop with a suffix of `Obj` by default, which is a object contains multiple formats of the answer value. For example
+
+```
+// If your prompt is as follows
+
+prompt: [
+  {
+    type: "input",
+    name: "author",
+    message: "What is the author's name",
+  },
+]
+
+// You can give a function to `updateFiles` prop
+
+updateFiles() {
+  // Here you can access the answer values
+  const answers = this.$answers
+  return {
+    "package.json": function(content) {
+      return ncgenApi.replace(content, {
+        'daniel': answers.nameObj.title
+      })
+    }
+  }
+}
+
+// If the name's answer value is "demo name", all its format values are as follows:
+{
+  "kebabCase": "demo-name",
+  "camelCase": "demoName",
+  "upperFirstCamelCase": "DemoName",
+  "title": "Demo Name",
+  "humanized": "Demo name"
+}
+```
+
 ## Features
 
 - 模板生态：所有现存的项目不需要任何改造即可作为模板，生态丰富
@@ -144,6 +183,15 @@ api.insertAfter('hi daniel\nhi ncgen', {
 
 - return
     dir list
+
+### api.listFiles
+
+- params
+  - dirPath: Your target project dir path
+  - excludes: exclude files
+
+- return
+    file list
 
 ### log.info
 

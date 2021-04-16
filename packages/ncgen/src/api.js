@@ -86,11 +86,14 @@ export function insertAfter(content, rules) {
   return result;
 }
 
-export function listDirs(dirPath, excludes) {
+function _listDirs(dirPath, excludes, type) {
+  const jurgeTypeFn = type === "file" ? "isFile" : "isDirectory";
   const targetDir = path.resolve(getProjectRootPath(), dirPath);
   let allDirs = fs
     .readdirSync(targetDir)
-    .filter((name) => fs.statSync(path.resolve(targetDir, name)).isDirectory());
+    .filter((name) =>
+      fs.statSync(path.resolve(targetDir, name))[jurgeTypeFn]()
+    );
   if (_.isArray(excludes)) {
     allDirs = allDirs.filter(
       (dir) => !excludes.some((eItem) => new RegExp(eItem).test(dir))
@@ -99,6 +102,14 @@ export function listDirs(dirPath, excludes) {
     allDirs = allDirs.filter((dir) => !excludes(dir));
   }
   return allDirs;
+}
+
+export function listDirs(dirPath, excludes) {
+  return _listDirs(dirPath, excludes, "dir");
+}
+
+export function listFiles(dirPath, excludes) {
+  return _listDirs(dirPath, excludes, "file");
 }
 
 /**

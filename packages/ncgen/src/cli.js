@@ -49,6 +49,8 @@ function cloneResource(tmplSource, isTemp = false) {
 }
 
 function prompt(promptConfig) {
+  if (!promptConfig) return
+
   const _promptConfig = [...promptConfig];
   if (!data.isSub) {
     _promptConfig.splice(0, 0, {
@@ -68,6 +70,8 @@ function prompt(promptConfig) {
 }
 
 function updateFiles(filesConfig) {
+  if (!filesConfig) return
+
   return Promise.all(
     Object.keys(filesConfig).map((filePath) => {
       const files = glob.sync(path.resolve(getProjectRootPath(), filePath));
@@ -155,6 +159,8 @@ async function installDependencies(installDeptConfig) {
 }
 
 async function addFilesTo(addFilesToConfig) {
+  if (!addFilesToConfig) return
+
   await Promise.all(
     _.map(addFilesToConfig, (val, key) => {
       return fs.copy(
@@ -167,6 +173,8 @@ async function addFilesTo(addFilesToConfig) {
 }
 
 async function addFiles(addFilesConfig) {
+  if (!addFilesConfig) return
+
   return Promise.all(
     _.map(addFilesConfig, (val, toPath) => {
       const content = resolveValue(val);

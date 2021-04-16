@@ -7,6 +7,7 @@ const {
   listDirs,
   insertBefore,
   insertAfter,
+  listFiles,
 } = require("../src/api");
 
 test("transformStr", () => {
@@ -58,11 +59,23 @@ test("listDirs", () => {
   expect(dirs2).toEqual(["src", "test"]);
 });
 
+test("listFiles", () => {
+  const rootPath = path.resolve(__dirname, "../");
+  const files = listFiles(rootPath, ["package-lock.*"]);
+  expect(files).toEqual(["jest.config.js", "package.json"]);
+
+  const files2 = listFiles(
+    rootPath,
+    (file) => ["package-lock.json"].indexOf(file) >= 0
+  );
+  expect(files2).toEqual(["jest.config.js", "package.json"]);
+});
+
 test("insertBefore", () => {
   const content = "a\nc\ne";
   const result = insertBefore(content, {
-    "c": "b",
-    "e": "d",
+    c: "b",
+    e: "d",
   });
   expect(result).toEqual("a\nb\nc\nd\ne");
 });
@@ -70,8 +83,8 @@ test("insertBefore", () => {
 test("insertAfter", () => {
   const content = "a\nc\ne";
   const result = insertAfter(content, {
-    "a": "b",
-    "c": "d",
+    a: "b",
+    c: "d",
   });
   expect(result).toEqual("a\nb\nc\nd\ne");
 });

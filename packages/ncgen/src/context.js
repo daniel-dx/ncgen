@@ -1,6 +1,7 @@
 import path from "path";
 import os from "os";
 import { transformStr } from "./api";
+import _ from "lodash";
 
 export const homePath = path.resolve(os.homedir(), ".ncgen");
 
@@ -13,6 +14,12 @@ export const data = {
 };
 
 export function getFnContext() {
+  Object.keys(answers).forEach((field) => {
+    if (_.isString(answers[field])) {
+      const objKey = `${field}Obj`;
+      answers[objKey] = answers[objKey] || transformStr(answers[field]);
+    }
+  });
   return {
     $answers: answers,
   };
