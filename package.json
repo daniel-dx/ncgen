@@ -5,6 +5,9 @@
   "author": "daniel.xiao <dxweixiao@tencent.com>",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "release": "node ./scripts/release.js"
+  },
   "workspaces": [
     "packages/*"
   ]

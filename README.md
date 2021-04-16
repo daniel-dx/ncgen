@@ -46,14 +46,18 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
 
 ## API
 
-### transformStr
+```
+import { api, log, _ } from "ncgen";
+```
+
+### api.transformStr
 
 - params
   - str: The string to be transform
 
 - return
 ```
-// transformStr('demo name') result: 
+// api.transformStr('demo name') result: 
 {
   "kebabCase": "demo-name",
   "camelCase": "demoName",
@@ -63,7 +67,7 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
 }
 ```
 
-### replace
+### api.replace
 
 - params
     - content: What to replace
@@ -75,20 +79,20 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
 
 - examples
 ```
-replace('hello world', {
+api.replace('hello world', {
   'hello': 'hi',
   'world': 'daniel'
 })
 // return: hi daniel
 
-replace('hello world', [
+api.replace('hello world', [
   [/hello/, 'hi'], 
   [/world/, 'daniel']
 ])
 // return: hi daniel
 ```
 
-### insertBefore
+### api.insertBefore
 
 - params
     - content: What to insert
@@ -100,7 +104,7 @@ replace('hello world', [
 
 - examples
 ```
-insertBefore('hello world', {
+api.insertBefore('hello world', {
   'hello world': 'hi daniel',
 })
 // return: hi daniel\nhello world
@@ -108,7 +112,7 @@ insertBefore('hello world', {
 
 > Note: the key of the rule does not support regular expressions
 
-### insertAfter
+### api.insertAfter
 
 - params
     - content: What to insert
@@ -120,7 +124,7 @@ insertBefore('hello world', {
 
 - examples
 ```
-insertAfter('hi daniel\nhi ncgen', {
+api.insertAfter('hi daniel\nhi ncgen', {
   "hi ncgen": "hello daniel"
 })
 // return: "hi daniel\nhello daniel\nhi ncgen"
@@ -128,7 +132,7 @@ insertAfter('hi daniel\nhi ncgen', {
 
 > Note: the key of the rule does not support regular expressions
 
-### listDirs
+### api.listDirs
 
 - params
   - dirPath: Your target project dir path
@@ -137,9 +141,40 @@ insertAfter('hi daniel\nhi ncgen', {
 - return
     dir list
 
-## Develop
+### log.info
 
 ```
+log.info('message')
+```
+
+### log.warn
+```
+log.warn('message')
+```
+
+### log.error
+```
+log.error('message')
+```
+
+### log.success
+```
+log.success('message')
+```
+
+### _
+
+Refer to [lodash document](https://lodash.com/docs)
+
+## Develop
+
+```bash
 $ yarn install
 $ DEBUG=ncgen node ./packages/ncgen/bin/ncgen
+```
+
+## Release
+
+```bash
+$ npm run release
 ```

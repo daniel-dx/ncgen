@@ -1,6 +1,8 @@
 {
   "name": "ncgen",
-  "version": "0.1.2",
+  "version": "0.1.4",
+  "repository": "https://github.com/daniel-dx/ncgen.git",
+  "author": "daniel.xiao <dxweixiao@tencent.com>",
   "main": "src/index.js",
   "license": "MIT",
   "publishConfig": {
@@ -11,7 +13,7 @@
   },
   "scripts": {
     "test": "jest",
-    "prepublish": "yarn run test"
+    "prepare": "npm run test"
   },
   "dependencies": {
     "@daniel-dx/degit": "^2.9.0",
