@@ -61,12 +61,12 @@ test("listDirs", () => {
 
 test("listFiles", () => {
   const rootPath = path.resolve(__dirname, "../");
-  const files = listFiles(rootPath, ["package-lock.*"]);
+  const files = listFiles(rootPath, ["package-lock.*", "README.md"]);
   expect(files).toEqual(["jest.config.js", "package.json"]);
 
   const files2 = listFiles(
     rootPath,
-    (file) => ["package-lock.json"].indexOf(file) >= 0
+    (file) => ["package-lock.json", "README.md"].indexOf(file) >= 0
   );
   expect(files2).toEqual(["jest.config.js", "package.json"]);
 });
