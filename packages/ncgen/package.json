@@ -1,6 +1,6 @@
 {
   "name": "ncgen",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "main": "src/index.js",
   "license": "MIT",
   "publishConfig": {
@@ -10,14 +10,15 @@
     "ncgen": "./bin/ncgen"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "yarn run test"
   },
   "dependencies": {
+    "@daniel-dx/degit": "^2.9.0",
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "commander": "^7.2.0",
     "debug": "^4.3.1",
-    "degit": "^2.8.0",
     "del": "^6.0.0",
     "esm": "^3.2.25",
     "execa": "^5.0.0",

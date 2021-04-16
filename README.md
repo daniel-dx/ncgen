@@ -1,56 +1,145 @@
 # ncgen
 A very nice code generator
 
-## 基本的结构
+## Install
 
-```js
-export default {
-  main: {
-    welcome: '',
-    prompt: [{}],
-    tmplSource: '',
-    updateFiles: {
-      '': function(content, options) {}
-    },
-    removeFiles: [''],
-    installDependencies: {},
-    complete: ''
-  },
-  sub: {
-    'command-name': {
-      prompt: [],
-      tmplSource: '',
-      addFilesTo: {
-        '': ''
-      },
-      addFiles: {
-        '': ''
-      },
-      updateFiles: {
-        '': function(content, options) {}
-      },
-      removeFiles: [],
-      complete: ''
-    }
-  }
-}
+```bash
+$ npm i ncgen -g
+```
+## Usage
+
+- Generate configuration file
+```
+$ ncgen genConf
+
+// Example:
+$ ncgen genConf -n ncgen-config.js
 ```
 
-## 一些记录
+- Build project scaffolding
+```bash
+ncgen <configuration file path>
 
-- 利用 [degit](https://github.com/Rich-Harris/degit) 来下载项目
+// Example:
+$ ncgen /path/to/ncgen-config.js
+$ ncgen https://<host path>/ncgen-config.js
+```
+
+- Subcommand to insert or modify project files
+```bash
+$ ncgen <configuration file path>::<subcommand>
+
+// Example:
+Examples:
+$ ncgen /path/to/ncgen-config.js::add-api
+$ ncgen https://<domain>/ncgen-config.js::add-api
+```
+
+> Use `ncgen <configuration file path>::help` to see all valid subcommands
+
+## Features
+
 - 模板生态：所有现存的项目不需要任何改造即可作为模板，生态丰富
 - 代码生成配置文件：可以URL，也可以是npm包
 - 项目脚手架生成器默认有 {projectName} 值，所以开发者不需额外提供
+- TODO
+
+## API
+
+### transformStr
+
+- params
+  - str: The string to be transform
+
+- return
+```
+// transformStr('demo name') result: 
+{
+  "kebabCase": "demo-name",
+  "camelCase": "demoName",
+  "upperFirstCamelCase": "DemoName",
+  "title": "Demo Name",
+  "humanized": "Demo name"
+}
+```
+
+### replace
+
+- params
+    - content: What to replace
+    - rules: replace rules  
+      format: {'regex string': 'string'} or [[regix, 'string']]
+
+- return
+    Replaced content
+
+- examples
+```
+replace('hello world', {
+  'hello': 'hi',
+  'world': 'daniel'
+})
+// return: hi daniel
+
+replace('hello world', [
+  [/hello/, 'hi'], 
+  [/world/, 'daniel']
+])
+// return: hi daniel
+```
+
+### insertBefore
+
+- params
+    - content: What to insert
+    - rules: insert rules  
+      format: {'string': 'string'}
+
+- return
+    Inserted content
+
+- examples
+```
+insertBefore('hello world', {
+  'hello world': 'hi daniel',
+})
+// return: hi daniel\nhello world
+```
+
+> Note: the key of the rule does not support regular expressions
+
+### insertAfter
+
+- params
+    - content: What to insert
+    - rules: insert rules  
+      format: {'string': 'string'}
+
+- return
+    Inserted content
+
+- examples
+```
+insertAfter('hi daniel\nhi ncgen', {
+  "hi ncgen": "hello daniel"
+})
+// return: "hi daniel\nhello daniel\nhi ncgen"
+```
+
+> Note: the key of the rule does not support regular expressions
+
+### listDirs
+
+- params
+  - dirPath: Your target project dir path
+  - excludes: exclude dirs
+
+- return
+    dir list
 
 ## Develop
 
 ```
 $ yarn install
-```
-
-## 查看调试信息
-
-```
 $ DEBUG=ncgen node ./packages/ncgen/bin/ncgen
 ```

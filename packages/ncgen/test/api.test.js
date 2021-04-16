@@ -1,7 +1,13 @@
 // require = require("esm")(module /*, options*/);
 
 const path = require("path");
-const { transformStr, replace, listDirs } = require("../src/api");
+const {
+  transformStr,
+  replace,
+  listDirs,
+  insertBefore,
+  insertAfter,
+} = require("../src/api");
 
 test("transformStr", () => {
   const inputs = [
@@ -50,4 +56,22 @@ test("listDirs", () => {
     (dir) => ["node_modules", "bin"].indexOf(dir) >= 0
   );
   expect(dirs2).toEqual(["src", "test"]);
+});
+
+test("insertBefore", () => {
+  const content = "a\nc\ne";
+  const result = insertBefore(content, {
+    "c": "b",
+    "e": "d",
+  });
+  expect(result).toEqual("a\nb\nc\nd\ne");
+});
+
+test("insertAfter", () => {
+  const content = "a\nc\ne";
+  const result = insertAfter(content, {
+    "a": "b",
+    "c": "d",
+  });
+  expect(result).toEqual("a\nb\nc\nd\ne");
 });

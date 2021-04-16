@@ -1,4 +1,4 @@
-import degit from "degit";
+import degit from "@daniel-dx/degit";
 import inquirer from "inquirer";
 import program from "commander";
 import path from "path";

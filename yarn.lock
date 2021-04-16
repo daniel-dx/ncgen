@@ -306,6 +306,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@daniel-dx/degit@^2.9.0":
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/@daniel-dx/degit/-/degit-2.9.0.tgz#8f8eae07caf14627c8e39a407f00ef6510f25cae"
+  integrity sha512-b8CelUanjYk1OsWwCDETBUIs3vTEiEQGtE0dawtayYkXw/KPrAtGcOzYfUWrzxkyKJm4S+RpfiUfJB9Zt2CCGQ==
+  dependencies:
+    fs-extra "9.1.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/@istanbuljs/load-nyc-config/download/@istanbuljs/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -1421,11 +1428,6 @@ define-property@^2.0.2:
     is-descriptor "^1.0.2"
     isobject "^3.0.1"
 
-degit@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.npm.taobao.org/degit/download/degit-2.8.0.tgz#ac0bff89987735ab19d02338fa8717d16137ea68"
-  integrity sha1-rAv/iZh3NasZ0CM4+ocX0WE36mg=
-
 del@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npm.taobao.org/del/download/del-6.0.0.tgz?cache=0&sync_timestamp=1601076882347&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fdel%2Fdownload%2Fdel-6.0.0.tgz#0b40d0332cea743f1614f818be4feb717714c952"
@@ -1810,7 +1812,7 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-fs-extra@^9.1.0:
+fs-extra@9.1.0, fs-extra@^9.1.0:
   version "9.1.0"
   resolved "https://registry.npm.taobao.org/fs-extra/download/fs-extra-9.1.0.tgz#5954460c764a8da2094ba3554bf839e6b9a7c86d"
   integrity sha1-WVRGDHZKjaIJS6NVS/g55rmnyG0=
