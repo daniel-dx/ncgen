@@ -321,7 +321,7 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
     const res = await axios.get(genConfigUrl);
     genConfigContent = res.data;
   } else {
-    genConfigContent = requireText(genConfigUrl, require);
+    genConfigContent = requireText(path.resolve(genConfigUrl), require);
   }
   const filePath = path.resolve(
     homePath,

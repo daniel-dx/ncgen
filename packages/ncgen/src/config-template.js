@@ -1,4 +1,4 @@
-import { api as ncgenApi } from "ncgen";
+import { api as ncgenApi, log, _ } from "ncgen";
 
 export default {
   // The main command. Used to generate project scaffolding
@@ -15,7 +15,7 @@ export default {
       // },
     ],
 
-    // Source of project template.reference: https://github.com/Rich-Harris/degit
+    // Source of project template.reference: https://github.com/daniel-dx/degit
     tmplSource: "",
 
     // Update files. Path supports glob: https://github.com/isaacs/node-glob#glob-primer
@@ -59,7 +59,7 @@ export default {
         // },
       ],
 
-      // Source of project template.reference: https://github.com/Rich-Harris/degit
+      // Source of project template.reference: https://github.com/daniel-dx/degit
       tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
 
       // Insert the specified files into the specified location

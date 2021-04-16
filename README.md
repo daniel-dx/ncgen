@@ -37,6 +37,10 @@ $ ncgen https://<domain>/ncgen-config.js::add-api
 
 > Use `ncgen <configuration file path>::help` to see all valid subcommands
 
+## ncgen config
+
+Refer to [config-template.js](https://github.com/daniel-dx/ncgen/blob/master/packages/ncgen/src/config-template.js)
+
 ## Features
 
 - 模板生态：所有现存的项目不需要任何改造即可作为模板，生态丰富
