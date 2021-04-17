@@ -51,8 +51,8 @@ The prop value can be a function. In the function, the value of answer can be ob
 prompt: [
   {
     type: "input",
-    name: "author",
-    message: "What is the author's name",
+    name: "name",
+    message: "What is your name",
   },
 ]
 
