@@ -4,11 +4,12 @@ import fs from "fs-extra";
 import { getProjectRootPath } from "./context";
 
 /**
- * 例子：transformStr('demo-name') or transformStr('demoName') or transformStr('DemoName') or transformStr('Demo Name') or transformStr('Demo name')
+ * 例子：transformStr('demo-name') or transformStr('demoName') or transformStr('DemoName') or transformStr('Demo Name') or transformStr('Demo name') or transformStr('demo_name')
  * 返回：
  * {
  *   "kebabCase": "demo-name",
  *   "camelCase": "demoName",
+ *   "snakeCase": "demo_name",
  *   "upperFirstCamelCase": "DemoName",
  *   "title": "Demo Name",
  *   "humanized": "Demo name"
@@ -22,6 +23,7 @@ export function transformStr(str) {
   return {
     kebabCase: _.kebabCase(wordsStr), // "demo-name"
     camelCase, // "demoName"
+    snakeCase: _.snakeCase(wordsStr), // "demo_name"
     upperFirstCamelCase, // "DemoName"
     title: _.words(upperFirstCamelCase).join(" "), // "Demo Name"
     humanized: words

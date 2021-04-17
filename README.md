@@ -74,6 +74,7 @@ updateFiles() {
 {
   "kebabCase": "demo-name",
   "camelCase": "demoName",
+  "snakeCase": "demo_name",
   "upperFirstCamelCase": "DemoName",
   "title": "Demo Name",
   "humanized": "Demo name"
@@ -104,6 +105,7 @@ import { api, log, _ } from "ncgen";
 {
   "kebabCase": "demo-name",
   "camelCase": "demoName",
+  "snakeCase": "demo_name",
   "upperFirstCamelCase": "DemoName",
   "title": "Demo Name",
   "humanized": "Demo name"

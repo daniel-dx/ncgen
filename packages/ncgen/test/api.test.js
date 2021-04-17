@@ -17,12 +17,14 @@ test("transformStr", () => {
     "DemoName",
     "Demo Name",
     "Demo name",
+    "demo_name",
   ];
   inputs.forEach((input) => {
     const result = transformStr(input);
     expect(result).toEqual({
       kebabCase: "demo-name",
       camelCase: "demoName",
+      snakeCase: "demo_name",
       upperFirstCamelCase: "DemoName",
       title: "Demo Name",
       humanized: "Demo name",
