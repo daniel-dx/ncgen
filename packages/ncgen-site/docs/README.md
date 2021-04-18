@@ -2,7 +2,7 @@
 home: true
 heroImage: /logo.png
 actionText: Get Started →
-actionLink: /zh/guide/
+actionLink: /guide/
 features:
   - title: Configuration Development
     details: Just develop a simple configuration file, you can have a code generator that is much easier to use than "copy, paste and modify"
