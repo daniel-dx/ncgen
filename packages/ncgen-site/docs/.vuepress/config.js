@@ -6,7 +6,7 @@ module.exports = {
     "/": {
       lang: "English", // this will be set as the lang attribute on <html>
       title: "ncgen",
-      description: "A nice code generator"
+      description: "A very nice code generator"
     },
     "/zh/": {
       lang: "简体中文",

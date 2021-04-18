@@ -1,4 +1,4 @@
-import { api as ncgenApi, log, _ } from "ncgen";
+import { api, log, _ } from "ncgen";
 
 export default {
   // The main command. Used to generate project scaffolding
@@ -32,27 +32,26 @@ export default {
     installDependencies: {
       skip: false,
       tips: "Dependencies are being installed, it may take a few minutes",
-      command: "npm i",
+      command: "npm i"
     },
 
     // Completion prompt message
-    complete: "Congratulations, the operation is successful",
+    complete: "Congratulations, the operation is successful"
   },
 
   // Subcommand. Used to insert fragment module code
   sub: {
     // key is the name of the subcommand
     "add-component": {
-
       // Subcommand description
-      description: '',
+      description: "",
 
       // Ask questions. reference: https://github.com/SBoudrias/Inquirer.js/#question
       prompt: [
         // {
         //   type: "list",
         //   choices: function () {
-        //     return ncgenApi.listDirs("src/");
+        //     return api.listDirs("src/");
         //   },
         //   name: "targetDir",
         //   message: "Please select the directory where the code is inserted",
@@ -70,11 +69,11 @@ export default {
       },
 
       // Add files directly.
-      addFiles: function () {
+      addFiles: function() {
         return {
-          "src/assets/test.txt": function () {
+          "src/assets/test.txt": function() {
             return "some content";
-          },
+          }
         };
       },
 
@@ -89,7 +88,7 @@ export default {
       removeFiles: [],
 
       // Completion prompt message
-      complete: "Congratulations, the operation is successful",
-    },
-  },
+      complete: "Congratulations, the operation is successful"
+    }
+  }
 };
