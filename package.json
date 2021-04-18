@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "release": "node ./scripts/release.js"
+    "release": "node ./scripts/release.js",
+    "release:doc": "cd packages/ncgen-site && sh deploy.sh"
   },
   "workspaces": [
     "packages/*"

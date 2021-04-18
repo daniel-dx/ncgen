@@ -1,0 +1,14 @@
+{
+  "name": "ncgen-site",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "devDependencies": {
+    "fs-extra": "^9.1.0",
+    "vuepress": "^1.8.2"
+  }
+}
