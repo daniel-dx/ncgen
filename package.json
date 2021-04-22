@@ -11,5 +11,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "execa": "^5.0.0"
+  }
 }
