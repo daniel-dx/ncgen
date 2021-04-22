@@ -357,8 +357,8 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
       log.info("Valid subcommands:");
       log.success(`
 ${Object.keys(config).map(key => {
-  return `- ${key}\n${config[key].description || ''}`
-})}
+  return `- ${key}\n${config[key].description || ''}\n\n`
+}).join('')}
       `);
       return;
     }
