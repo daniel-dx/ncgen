@@ -59,3 +59,49 @@ $ ncgen <configuration file path>::help
 # 例子
 $ ncgen ./ncgen-config.js::help
 ```
+
+## 答案获取
+
+所有支持 `function` 类型的属性（除了 `welcome`, `prompt`, `description` 外），都可以在 `function` 里面通过 `this.$answers` 获取问题答案数据。
+
+假设你的问题项设置如下：
+
+```js
+// 例子
+{
+  main: {
+    ...
+    prompt: [
+      {
+        type: "input",
+        name: "name",
+        message: "What is your name"
+      }
+    ],
+    ...
+  }
+}
+```
+
+那么你可以在 `updateFiles` 中通过 `this.$answers` 获取 `name` 的值。
+
+```js
+{
+  main: {
+    ...
+    updateFiles: {
+      "package.json": function (content, options) {
+        // 假设用户输入的 `name` 的值为 `demo name`，那么你可以通过以下获取到各种格式的值
+        this.$answers.name // demo name
+        this.$answers.nameObj.kebabCase // demo-name
+        this.$answers.nameObj.camelCase // demoName
+        this.$answers.nameObj.snakeCase // demo_name
+        this.$answers.nameObj.upperFirstCamelCase // DemoName
+        this.$answers.nameObj.title // Demo Name
+        this.$answers.nameObj.humanized // Demo name
+      }
+    },
+    ...
+  }
+}
+```

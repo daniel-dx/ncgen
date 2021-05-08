@@ -1,7 +1,7 @@
 # Config
 
 ::: tip TIP
-For all attributes that support `function` type (except `welcome`, `prompt`, `description`), you can use `this.$answers` in their `function` type value to get the question answer data
+For all attributes that support `function` type (except `welcome`, `prompt`, `description`), you can use `this.$answers` in their `function` type value to get the question answer data. Specific reference to [Answer get](Guide.html#answer-get)
 :::
 
 ## main
@@ -53,7 +53,7 @@ In the `prompt` of `main`, there is a question item with the attribute `projectN
         name: "name",
         message: "What is your name"
       }
-    ];
+    ],
   }
 }
 ```
@@ -68,7 +68,7 @@ Project template url. Please refer to [degit](https://github.com/daniel-dx/degit
 // Example
 {
   main: {
-    tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo";
+    tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
   }
 }
 ```
@@ -128,7 +128,7 @@ File path support [glob](https://github.com/isaacs/node-glob#glob-primer) matchi
 // Example
 {
   main: {
-    removeFiles: ["vite.config.js", "src/**/*.png"];
+    removeFiles: ["vite.config.js", "src/**/*.png"],
   }
 }
 ```
@@ -172,7 +172,7 @@ Completion prompt message
 // Example
 {
   main: {
-    complete: "Congratulations, the operation is successful";
+    complete: "Congratulations, the operation is successful",
   }
 }
 ```

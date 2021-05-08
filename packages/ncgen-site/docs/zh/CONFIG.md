@@ -1,7 +1,7 @@
 # Config
 
 ::: tip 提示
-所有支持 `function` 类型的属性（除了 `welcome`, `prompt`, `description` 外），都可以在 `function` 里面通过 `this.$answers` 获取问题答案数据
+所有支持 `function` 类型的属性（除了 `welcome`, `prompt`, `description` 外），都可以在 `function` 里面通过 `this.$answers` 获取问题答案数据。具体参考 [问题答案获取](Guide.html#答案获取)
 :::
 
 ## main
@@ -53,7 +53,7 @@
         name: "name",
         message: "What is your name"
       }
-    ];
+    ],
   }
 }
 ```
@@ -68,7 +68,7 @@
 // 例子
 {
   main: {
-    tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo";
+    tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
   }
 }
 ```
@@ -128,7 +128,7 @@
 // 例子
 {
   main: {
-    removeFiles: ["vite.config.js", "src/**/*.png"];
+    removeFiles: ["vite.config.js", "src/**/*.png"],
   }
 }
 ```
@@ -172,7 +172,7 @@
 // 例子
 {
   main: {
-    complete: "Congratulations, the operation is successful";
+    complete: "Congratulations, the operation is successful",
   }
 }
 ```
@@ -233,7 +233,7 @@
 
 ::: warning 注意
 
-当 `tmplSource` 为空时  该项无效
+当 `tmplSource` 为空时 该项无效
 :::
 
 ```js

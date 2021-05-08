@@ -59,3 +59,49 @@ $ ncgen <configuration file path>::help
 # Example
 $ ncgen ./ncgen-config.js::help
 ```
+
+## Answer get
+
+For all attributes that support `function` type (except `welcome`, `prompt`, `description`), you can use `this.$answers` in their `function` type value to get the question answer data.
+
+Suppose your question items are set as follows:
+
+```js
+// example
+{
+  main: {
+    ...
+    prompt: [
+      {
+        type: "input",
+        name: "name",
+        message: "What is your name"
+      }
+    ],
+    ...
+  }
+}
+```
+
+Then you can get the value of `name` through `this.$answers` in `updateFiles`.
+
+```js
+{
+  main: {
+    ...
+    updateFiles: {
+      "package.json": function (content, options) {
+        // Assuming that the value of `name` entered by the user is `demo name`, then you can get the value in various formats through the following
+        this.$answers.name // demo name
+        this.$answers.nameObj.kebabCase // demo-name
+        this.$answers.nameObj.camelCase // demoName
+        this.$answers.nameObj.snakeCase // demo_name
+        this.$answers.nameObj.upperFirstCamelCase // DemoName
+        this.$answers.nameObj.title // Demo Name
+        this.$answers.nameObj.humanized // Demo name
+      }
+    },
+    ...
+  }
+}
+```
