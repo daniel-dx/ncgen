@@ -43,7 +43,7 @@ export function transformStr(str) {
         if (idx === 0) return _.upperFirst(word);
         return _.lowerCase(word);
       })
-      .join(" "), // "Demo name"
+      .join(" ") // "Demo name"
   };
 }
 
@@ -69,13 +69,13 @@ export function transformStr(str) {
 export function replace(content, rules) {
   let result = content;
   if (_.isArray(rules)) {
-    rules.forEach((item) => {
+    rules.forEach(item => {
       const [rule, val] = item;
-      result = result.replace(new RegExp(rule), val);
+      result = result.replace(new RegExp(rule, "g"), val);
     });
   } else if (_.isObject(rules)) {
-    Object.keys(rules).forEach((rule) => {
-      result = result.replace(new RegExp(rule), rules[rule]);
+    Object.keys(rules).forEach(rule => {
+      result = result.replace(new RegExp(rule, "g"), rules[rule]);
     });
   }
 
@@ -104,14 +104,14 @@ export function replace(content, rules) {
  */
 export function insertBefore(content, rules) {
   let result = content;
-  Object.keys(rules).forEach((rule) => {
+  Object.keys(rules).forEach(rule => {
     result = rewrite({
       haystack: result,
       splicable: [rules[rule]],
       needle: rule,
       isAppend: false,
       appendAfter: true,
-      insertPrev: true,
+      insertPrev: true
     });
   });
 
@@ -140,14 +140,14 @@ export function insertBefore(content, rules) {
  */
 export function insertAfter(content, rules) {
   let result = content;
-  Object.keys(rules).forEach((rule) => {
+  Object.keys(rules).forEach(rule => {
     result = rewrite({
       haystack: result,
       splicable: [rules[rule]],
       needle: rule,
       isAppend: false,
       appendAfter: true,
-      insertPrev: false,
+      insertPrev: false
     });
   });
 
@@ -162,15 +162,13 @@ function _listDirs(dirPath, excludes, type) {
   const targetDir = path.resolve(getProjectRootPath(), dirPath);
   let allDirs = fs
     .readdirSync(targetDir)
-    .filter((name) =>
-      fs.statSync(path.resolve(targetDir, name))[jurgeTypeFn]()
-    );
+    .filter(name => fs.statSync(path.resolve(targetDir, name))[jurgeTypeFn]());
   if (_.isArray(excludes)) {
     allDirs = allDirs.filter(
-      (dir) => !excludes.some((eItem) => new RegExp(eItem).test(dir))
+      dir => !excludes.some(eItem => new RegExp(eItem).test(dir))
     );
   } else if (_.isFunction(excludes)) {
-    allDirs = allDirs.filter((dir) => !excludes(dir));
+    allDirs = allDirs.filter(dir => !excludes(dir));
   }
   return allDirs;
 }
@@ -245,7 +243,6 @@ export function listFiles(dirPath, excludes) {
   return _listDirs(dirPath, excludes, "file");
 }
 
-
 /**
  * @ignore
  *
@@ -268,7 +265,7 @@ function rewrite({
   needle,
   isAppend = false,
   appendAfter = true,
-  insertPrev = false,
+  insertPrev = false
 }) {
   function escapeRegExp(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -276,7 +273,7 @@ function rewrite({
 
   // Check if splicable is already in the body text
   const re = new RegExp(
-    splicable.map((line) => "s*" + escapeRegExp(line)).join("\n")
+    splicable.map(line => "s*" + escapeRegExp(line)).join("\n")
   );
 
   if (re.test(haystack)) {
@@ -322,7 +319,7 @@ function rewrite({
     lines.splice(
       otherwiseLineIndex + n,
       0,
-      splicable.map((line) => spaceStr + line).join("\n")
+      splicable.map(line => spaceStr + line).join("\n")
     );
   }
 

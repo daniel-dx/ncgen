@@ -28,7 +28,7 @@ function cloneResource(tmplSource, isTemp = false) {
   const spinner = ora("Downloading").start();
   return new Promise((resolve) => {
     const emitter = degit(tmplSource, {
-      cache: true,
+      cache: false,
       force: true,
       verbose: true,
     });
