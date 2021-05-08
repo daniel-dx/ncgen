@@ -8,13 +8,34 @@
 $ npm i ncgen -g # yarn global add ncgen
 ```
 
-2. Generate configuration files
+2. Generate configuration file
 
 ```bash
 $ ncgen genConf
 ```
 
 This will generate a file called `ncgen-config.js` in your current directory
+
+3. Edit the configuration file
+
+Assume that the template project is: [vue3-ncgen-demo](https://github.com/daniel-dx/vue3-ncgen-demo)
+
+Copy the content of [example ncgen-config.js corresponding to the template project](https://github.com/daniel-dx/vue3-ncgen-demo/blob/master/ncgen-config.js) to your `ncgen-config.js`
+
+> For detailed introduction of each configuration item, please see: [Configuration Help Document](config.html)
+
+4. Run
+
+```sh
+# Run the main command to generate project scaffolding
+$ ncgen path/to/ncgen-config.js
+
+# View all subcommands
+$ ncgen path/to/ncgen-config.js::help
+
+# Run subcommands to add new component to the generated project
+$ ncgen path/to/ncgen-config.js::add-component
+```
 
 ## Command Line
 
@@ -39,7 +60,7 @@ ncgen <configuration file path>
 $ ncgen ./ncgen-config.js
 
 # Example 2: Load remote configuration file
-$ ncgen https://raw.githubusercontent.com/daniel-dx/ncgen/master/test/index.js
+$ ncgen https://raw.githubusercontent.com/daniel-dx/vue3-ncgen-demo/master/ncgen-config.js
 ```
 
 - Execute subcommand: update project code incrementally
@@ -47,8 +68,8 @@ $ ncgen https://raw.githubusercontent.com/daniel-dx/ncgen/master/test/index.js
 ```bash
 $ ncgen <configuration file path>::<subcommand>
 
-# Example: Execute the add-api subcommand
-$ ncgen ./ncgen-config.js::add-api
+# Example: Execute the add-component subcommand
+$ ncgen ./ncgen-config.js::add-component
 ```
 
 - List all subcommands

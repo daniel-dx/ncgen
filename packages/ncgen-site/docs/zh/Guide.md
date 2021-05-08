@@ -16,6 +16,27 @@ $ ncgen genConf
 
 这将会在你当前目录下生成一个 `ncgen-config.js` 的文件
 
+3. 编辑配置文件
+
+假设模板项目为：[vue3-ncgen-demo](https://github.com/daniel-dx/vue3-ncgen-demo)
+
+将 [模板项目对应的示例 ncgen-config.js](https://github.com/daniel-dx/vue3-ncgen-demo/blob/master/ncgen-config.js) 的内容复制到你的 `ncgen-config.js`
+
+> 各配置项的详细介绍请查看：[配置帮助文档](config.html)
+
+4. 运行
+
+```sh 
+# 运行主命令生成项目脚手架
+$ ncgen path/to/ncgen-config.js
+
+# 查看所有子命令
+$ ncgen path/to/ncgen-config.js::help
+
+# 运行子命令在生成的项目中新增组件
+$ ncgen path/to/ncgen-config.js::add-component
+```
+
 ## 命令行
 
 - 生成配置文件
@@ -39,7 +60,7 @@ ncgen <configuration file path>
 $ ncgen ./ncgen-config.js
 
 # 例子2: 加载远程配置文件
-$ ncgen https://raw.githubusercontent.com/daniel-dx/ncgen/master/test/index.js
+$ ncgen https://raw.githubusercontent.com/daniel-dx/vue3-ncgen-demo/master/ncgen-config.js
 ```
 
 - 执行子命令：增量更新项目代码
@@ -47,8 +68,8 @@ $ ncgen https://raw.githubusercontent.com/daniel-dx/ncgen/master/test/index.js
 ```bash
 $ ncgen <configuration file path>::<subcommand>
 
-# 例子: 执行 add-api 子命令
-$ ncgen ./ncgen-config.js::add-api
+# 例子: 执行 add-component 子命令
+$ ncgen ./ncgen-config.js::add-component
 ```
 
 - 查看所有子命令
