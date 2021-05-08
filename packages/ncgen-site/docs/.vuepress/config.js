@@ -20,7 +20,8 @@ module.exports = {
     nav: [
       { text: "Guide", link: "/guide/" },
       { text: "Config", link: "/config/" },
-      { text: "API", link: "/api/" }
+      { text: "API", link: "/api/" },
+      { text: "Support", link: "/support/" }
     ],
     repo: 'daniel-dx/ncgen',
 
@@ -30,7 +31,8 @@ module.exports = {
         nav: [
           { text: "指南", link: "/zh/guide/" },
           { text: "配置", link: "/zh/config/" },
-          { text: "API", link: "/zh/api/" }
+          { text: "API", link: "/zh/api/" },
+          { text: "支持", link: "/zh/support/" }
         ]
       }
     }
