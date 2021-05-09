@@ -44,6 +44,16 @@ test("replace", () => {
   ]);
   expect(result).toBe("ncgen is a very nice code generator");
   expect(result1).toBe("ncgen is a very nice code generator");
+
+  const content2 = "ncgen is a veri veri nice code generator";
+  const result2 = replace(content2, {
+    veri: "very",
+  });
+  const result3 = replace(content2, [
+    ["veri", "very"],
+  ]);
+  expect(result2).toBe("ncgen is a very very nice code generator");
+  expect(result3).toBe("ncgen is a very very nice code generator");
 });
 
 test("listDirs", () => {
