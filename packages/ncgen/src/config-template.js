@@ -1,12 +1,12 @@
 import { api, log, _ } from "ncgen";
 
 export default {
-  // The main command. Used to generate project scaffolding
+  // The main command. Used to generate project scaffolding. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#main
   main: {
-    // Show welcome message
+    // Show welcome message. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#welcome
     welcome: "Welcome",
 
-    // Ask questions. reference: https://github.com/SBoudrias/Inquirer.js/#question
+    // Ask questions. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#prompt
     prompt: [
       // {
       //   type: "input",
@@ -15,38 +15,38 @@ export default {
       // },
     ],
 
-    // Source of project template.reference: https://github.com/daniel-dx/degit
+    // Source of project template. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#tmplsource
     tmplSource: "",
 
-    // Update files. Path supports glob: https://github.com/isaacs/node-glob#glob-primer
+    // Update files. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#updatefiles
     updateFiles: {
-      // "path/to/files": function (content, options) {
+      // "path/to/project/files": function (content, options) {
       //   return content;
       // },
     },
 
-    // Delete Files. Path supports glob: https://github.com/isaacs/node-glob#glob-primer
+    // Delete Files. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#removefiles
     removeFiles: [],
 
-    // Install dependencies
+    // Install dependencies. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#installdependencies
     installDependencies: {
       skip: false,
       tips: "Dependencies are being installed, it may take a few minutes",
       command: "npm i"
     },
 
-    // Completion prompt message
+    // Completion prompt message. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#complete
     complete: "Congratulations, the operation is successful"
   },
 
-  // Subcommand. Used to insert fragment module code
+  // Subcommand. Used to insert fragment module code. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#sub
   sub: {
     // key is the name of the subcommand
     "add-component": {
-      // Subcommand description
+      // Subcommand description. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#description
       description: "",
 
-      // Ask questions. reference: https://github.com/SBoudrias/Inquirer.js/#question
+      // Ask questions. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#prompt-2
       prompt: [
         // {
         //   type: "list",
@@ -58,36 +58,36 @@ export default {
         // },
       ],
 
-      // Source of project template.reference: https://github.com/daniel-dx/degit
-      tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
+      // Source of project template. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#tmplsource-2
+      tmplSource: "",
 
-      // Insert the specified files into the specified location
+      // Insert the specified files into the specified location. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#addfilesto
       addFilesTo: {
         // "path/to/template/file": function () {
         //   return "path/to/project/file";
         // },
       },
 
-      // Add files directly.
+      // Add files directly. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#addfiles
       addFiles: function() {
         return {
-          "src/assets/test.txt": function() {
-            return "some content";
-          }
+          // "path/to/project/file": function() {
+          //   return "some content";
+          // }
         };
       },
 
-      // Update files. Path supports glob: https://github.com/isaacs/node-glob#glob-primer
+      // Update files. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#updatefiles-2
       updateFiles: {
-        // "path/to/files": function (content, options) {
+        // "path/to/project/files": function (content, options) {
         //   return content;
         // },
       },
 
-      // Delete Files. Path supports glob: https://github.com/isaacs/node-glob#glob-primer
+      // Delete Files. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#removefiles-2
       removeFiles: [],
 
-      // Completion prompt message
+      // Completion prompt message. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#complete-2
       complete: "Congratulations, the operation is successful"
     }
   }
