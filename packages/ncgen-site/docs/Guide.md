@@ -2,6 +2,8 @@
 
 ## Get started
 
+> You only need to provide a configuration file describing the logic of the code generator, please follow the steps below to create your first code generator
+
 1. Installation
 
 ```bash
