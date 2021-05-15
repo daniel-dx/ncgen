@@ -2,7 +2,53 @@
 # API
 
 ```
-import { api, log, _ } from "ncgen";
+import { generate, CommandType, api, log, _ } from "ncgen";
+```
+
+## CommandType : <code>enum</code>
+Enum for command type.
+
+
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| MAIN | <code>string</code> | 
+| SUB | <code>string</code> | 
+
+<a name="generate"></a>
+
+## generate(config, options) ⇒ <code>promise</code>
+Call ncgen through node api form
+
+
+**Returns**: <code>promise</code> - Promise  
+**Params**
+
+- config <code>string</code> | <code>object</code> - Configuration file path or configuration object
+- options <code>object</code> - Options
+    - .type <code>string</code> - CommandType.MAIN or CommandType.SUB
+    - .command <code>string</code> - The name of the executed subcommand. Only needed when type is CommandType.SUB
+    - .answers <code>object</code> - Provided when you want to skip interactive questioning
+
+**Example**  
+```js
+import { generate, CommandType } from "ncgen"
+
+// Execute the main command
+generate('path/to/ncgen-config.js', { type: CommandType.MAIN })
+// or
+const ncgenConfig = require('path/to/ncgen-config.js')
+generate(ncgenConfig, { type: CommandType.MAIN })
+
+// Execute the main command with answer data
+generate('path/to/ncgen-config.js', { type: CommandType.MAIN, answers: { projectName: 'demo', author: 'daniel' } })
+
+// Execute the sub command
+generate('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component' })
+
+// Execute the sub command with answer data
+generate('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component', answers: { category: 'busi', name: 'hello world' } })
 ```
 
 ## api
@@ -18,12 +64,12 @@ Convert input string into a variety of commonly used formats
 
 **Example**  
 ```js
-transformStr('demo-name')
-transformStr('demoName')
-transformStr('DemoName')
-transformStr('Demo Name')
-transformStr('Demo name')
-transformStr('demo_name')
+api.transformStr('demo-name')
+api.transformStr('demoName')
+api.transformStr('DemoName')
+api.transformStr('Demo Name')
+api.transformStr('Demo name')
+api.transformStr('demo_name')
 
 // returns:
 {
@@ -50,11 +96,11 @@ Replacement method that can process multiple replacement rules at the same time
 **Example**  
 ```js
 const content = "ncgen is a very niice coded generator";
-replace(content, {
+api.replace(content, {
   "\\sniice\\s": " nice ",
   coded: "code",
 });
-replace(content, [
+api.replace(content, [
   [/\sniice\s/, " nice "],
   ["coded", "code"],
 ]);
@@ -78,7 +124,7 @@ Note: only string matching, does not support regular expressions
 **Example**  
 ```js
 const content = "a\nc\ne";
-const result = insertBefore(content, {
+const result = api.insertBefore(content, {
   c: "b",
   e: "d",
 });
@@ -106,7 +152,7 @@ Note: only string matching, does not support regular expressions
 **Example**  
 ```js
 const content = "a\nc\ne";
-const result = insertAfter(content, {
+const result = api.insertAfter(content, {
   a: "b",
   c: "d",
 });
@@ -140,15 +186,15 @@ List the directory name of the specified path
 ├── test
 └── package.json
 
-listDirs("./");
+api.listDirs("./");
 // returns
 ["bin", "node_modules", "src", "test"]
 
-listDirs("./", ["bin", "node.*"]);
+api.listDirs("./", ["bin", "node.*"]);
 // returns
 ["src", "test"]
 
-listDirs(
+api.listDirs(
   "./",
   (dir) => ["node_modules", "bin"].indexOf(dir) >= 0
 );
@@ -179,15 +225,15 @@ List the file name of the specified path
 ├── package-lock.json
 └── package.json
 
-listFiles("./");
+api.listFiles("./");
 // returns
 ["jest.config.js", "README.md", "package-lock.json", "package.json"]
 
-listFiles("./", ["package-lock.*", "README.md"]);
+api.listFiles("./", ["package-lock.*", "README.md"]);
 // returns
 ["jest.config.js", "package.json"]
 
-listFiles(
+api.listFiles(
   "./",
   (file) => ["package-lock.json", "README.md"].indexOf(file) >= 0
 );

@@ -24,7 +24,11 @@ import {
   getFnContext,
   initContext
 } from "./context";
-import { CommandType } from "./api";
+
+export const CommandType = {
+  MAIN: "main",
+  SUB: "sub"
+};
 
 function cloneResource(tmplSource, isTemp = false) {
   const spinner = ora("Downloading").start();

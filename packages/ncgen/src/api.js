@@ -2,60 +2,20 @@ import _ from "lodash";
 import path from "path";
 import fs from "fs-extra";
 import { getProjectRootPath } from "./context";
-import { generate } from "./cli";
 
 /** 代码注释格式参考：https://jsdoc.app/ */
-
-/**
- * Command type enum values: CommandType.MAIN, CommandType.SUB
- */
-export const CommandType = {
-  MAIN: "main",
-  SUB: "sub"
-};
-
-/**
- * Call ncgen through node api form
- * @param {(string|object)} config - Configuration file path or configuration object
- * @param {object[]} options - Options
- * @param {string} options[].type - CommandType.MAIN or CommandType.SUB
- * @param {string} options[].command - The name of the executed subcommand. Only needed when type is CommandType.SUB
- * @param {object} options[].answers - Provided when you want to skip interactive questioning
- * @returns {promise} Promise
- * @example
- * import ncgen, { CommandType } from "ncgen"
- *
- * // Execute the main command
- * ncgen('path/to/ncgen-config.js', { type: CommandType.MAIN })
- * // or
- * const ncgenConfig = require('path/to/ncgen-config.js')
- * ncgen(ncgenConfig, { type: CommandType.MAIN })
- *
- * // Execute the main command with answer data
- * ncgen('path/to/ncgen-config.js', { type: CommandType.MAIN, answers: { projectName: 'demo', author: 'daniel' } })
- *
- * // Execute the sub command
- * ncgen('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component' })
- *
- * // Execute the sub command with answer data
- * ncgen('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component', answers: { category: 'busi', name: 'hello world' } })
- *
- */
-export function ncgen(config, options) {
-  return generate(config, options);
-}
 
 /**
  * Convert input string into a variety of commonly used formats
  * @param {string} str - Input string.
  * @returns {object} Strings in a variety of commonly used formats
  * @example
- * transformStr('demo-name')
- * transformStr('demoName')
- * transformStr('DemoName')
- * transformStr('Demo Name')
- * transformStr('Demo name')
- * transformStr('demo_name')
+ * api.transformStr('demo-name')
+ * api.transformStr('demoName')
+ * api.transformStr('DemoName')
+ * api.transformStr('Demo Name')
+ * api.transformStr('Demo name')
+ * api.transformStr('demo_name')
  *
  * // returns:
  * {
@@ -94,11 +54,11 @@ export function transformStr(str) {
  * @returns {string} Replaced content
  * @example
  * const content = "ncgen is a very niice coded generator";
- * replace(content, {
+ * api.replace(content, {
  *   "\\sniice\\s": " nice ",
  *   coded: "code",
  * });
- * replace(content, [
+ * api.replace(content, [
  *   [/\sniice\s/, " nice "],
  *   ["coded", "code"],
  * ]);
@@ -130,7 +90,7 @@ export function replace(content, rules) {
  * @returns {string} The content containing the inserted string
  * @example
  * const content = "a\nc\ne";
- * const result = insertBefore(content, {
+ * const result = api.insertBefore(content, {
  *   c: "b",
  *   e: "d",
  * });
@@ -166,7 +126,7 @@ export function insertBefore(content, rules) {
  * @returns {string} The content containing the inserted string
  * @example
  * const content = "a\nc\ne";
- * const result = insertAfter(content, {
+ * const result = api.insertAfter(content, {
  *   a: "b",
  *   c: "d",
  * });
@@ -228,15 +188,15 @@ function _listDirs(dirPath, excludes, type) {
  * ├── test
  * └── package.json
  *
- * listDirs("./");
+ * api.listDirs("./");
  * // returns
  * ["bin", "node_modules", "src", "test"]
  *
- * listDirs("./", ["bin", "node.*"]);
+ * api.listDirs("./", ["bin", "node.*"]);
  * // returns
  * ["src", "test"]
  *
- * listDirs(
+ * api.listDirs(
  *   "./",
  *   (dir) => ["node_modules", "bin"].indexOf(dir) >= 0
  * );
@@ -264,15 +224,15 @@ export function listDirs(dirPath, excludes) {
  * ├── package-lock.json
  * └── package.json
  *
- * listFiles("./");
+ * api.listFiles("./");
  * // returns
  * ["jest.config.js", "README.md", "package-lock.json", "package.json"]
  *
- * listFiles("./", ["package-lock.*", "README.md"]);
+ * api.listFiles("./", ["package-lock.*", "README.md"]);
  * // returns
  * ["jest.config.js", "package.json"]
  *
- * listFiles(
+ * api.listFiles(
  *   "./",
  *   (file) => ["package-lock.json", "README.md"].indexOf(file) >= 0
  * );

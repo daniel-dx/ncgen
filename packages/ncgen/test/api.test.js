@@ -1,18 +1,31 @@
-// require = require("esm")(module /*, options*/);
-
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs-extra");
 const {
-  ncgen,
-  transformStr,
-  replace,
-  listDirs,
-  insertBefore,
-  insertAfter,
-  listFiles,
-  CommandType
-} = require("../src/api");
+  generate,
+  CommandType,
+  api: {
+    transformStr,
+    replace,
+    listDirs,
+    insertBefore,
+    insertAfter,
+    listFiles
+  },
+  log,
+  _
+} = require("../src/index");
+
+test("log", () => {
+  log.info("info");
+  log.warn("warn");
+  log.success("success");
+  log.error("error");
+});
+
+test("lodash", () => {
+  expect(_.get({ name: "ncgen" }, "name")).toEqual("ncgen");
+});
 
 test("transformStr", () => {
   const inputs = [
@@ -113,7 +126,7 @@ function expectFileContain(filePath, keywords) {
   });
 }
 
-describe("ncgen", () => {
+describe("ncgen generate", () => {
   // stub inquirer
   let backup;
   function getGenProjectInfo(idx) {
@@ -136,7 +149,7 @@ describe("ncgen", () => {
 
     inquirer.prompt = questions =>
       Promise.resolve({ projectName, author: "daniel" });
-    await ncgen(ncgenConfigPath, {
+    await generate(ncgenConfigPath, {
       type: CommandType.MAIN
     });
 
@@ -154,7 +167,7 @@ describe("ncgen", () => {
     process.chdir(genProjectPath);
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
-    await ncgen(ncgenConfigPath, {
+    await generate(ncgenConfigPath, {
       type: CommandType.SUB,
       command: "add-component"
     });
@@ -186,7 +199,7 @@ describe("ncgen", () => {
   it(`ncgen: handle ncgen-config.js and answers`, async () => {
     let { path: genProjectPath, name: projectName } = getGenProjectInfo(2);
 
-    await ncgen(ncgenConfigPath, {
+    await generate(ncgenConfigPath, {
       type: CommandType.MAIN,
       answers: { projectName, author: "daniel" }
     });
@@ -203,7 +216,7 @@ describe("ncgen", () => {
     expectFileExist(path.resolve(genProjectPath, "package.json"), true);
 
     process.chdir(genProjectPath);
-    await ncgen(ncgenConfigPath, {
+    await generate(ncgenConfigPath, {
       type: CommandType.SUB,
       command: "add-component",
       answers: { category: "busi", name: "hello ncgen" }
@@ -238,7 +251,7 @@ describe("ncgen", () => {
 
     inquirer.prompt = questions =>
       Promise.resolve({ projectName, author: "daniel" });
-    await ncgen(ncgenConfig, {
+    await generate(ncgenConfig, {
       type: CommandType.MAIN
     });
 
@@ -256,7 +269,7 @@ describe("ncgen", () => {
     process.chdir(genProjectPath);
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
-    await ncgen(ncgenConfig, {
+    await generate(ncgenConfig, {
       type: CommandType.SUB,
       command: "add-component"
     });
