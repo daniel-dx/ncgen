@@ -62,14 +62,23 @@ In the `prompt` of `main`, there is a question item with the attribute `projectN
 
 > string | function
 
-Project template url. Please refer to [degit](https://github.com/daniel-dx/degit)
+Project template url. Support git address and local directory
+
+For git address format, please refer to [degit](https://github.com/daniel-dx/degit)
 
 ```js
-// Example
+// git address example
 {
-  main: {
-    tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
-  }
+   main: {
+     tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
+   }
+}
+
+// local directory example
+{
+   main: {
+     tmplSource: "/Users/daniel/Projects/vue3-ncgen-demo",
+   }
 }
 ```
 

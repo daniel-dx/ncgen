@@ -126,6 +126,25 @@ function expectFileContain(filePath, keywords) {
   });
 }
 
+test("tmplSource is local dir", async () => {
+  process.chdir(__dirname);
+  const projectName = "test-demo-localdir";
+  const genProjectPath = path.resolve(__dirname, projectName);
+  const config = {
+    main: {
+      tmplSource: "/Users/daniel/Projects/Owner/vue3-ncgen-demo"
+    }
+  };
+  await generate(config, {
+    type: CommandType.MAIN,
+    answers: {
+      projectName
+    }
+  });
+  expectFileExist(path.resolve(genProjectPath, "ncgen-config.js"), true);
+  fs.removeSync(genProjectPath);
+});
+
 describe("ncgen generate", () => {
   // stub inquirer
   let backup;

@@ -31,27 +31,33 @@ export const CommandType = {
 };
 
 function cloneResource(tmplSource, isTemp = false) {
-  const spinner = ora("Downloading").start();
-  return new Promise(resolve => {
-    const emitter = degit(tmplSource, {
-      cache: false,
-      force: true,
-      verbose: true
-    });
+  const destPath = path.resolve(
+    getProjectRootPath(),
+    isTemp ? getLocationOfTheProjectClone() : ""
+  );
+  if (fs.existsSync(tmplSource)) {
+    // 项目模板在本地
+    return fs.copy(tmplSource, destPath);
+  } else {
+    // 项目模板在远程git
+    const spinner = ora("Downloading").start();
+    return new Promise(resolve => {
+      const emitter = degit(tmplSource, {
+        cache: false,
+        force: true,
+        verbose: true
+      });
 
-    emitter.on("info", info => {
-      debug(info.message);
-    });
+      emitter.on("info", info => {
+        debug(info.message);
+      });
 
-    const destPath = path.resolve(
-      getProjectRootPath(),
-      isTemp ? getLocationOfTheProjectClone() : ""
-    );
-    emitter.clone(destPath).then(() => {
-      spinner.stop();
-      resolve("done");
+      emitter.clone(destPath).then(() => {
+        spinner.stop();
+        resolve("done");
+      });
     });
-  });
+  }
 }
 
 function prompt(promptConfig) {

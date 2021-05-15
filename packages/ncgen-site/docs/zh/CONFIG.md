@@ -62,13 +62,22 @@
 
 > string | function
 
-项目模板地址。请参考[degit](https://github.com/daniel-dx/degit)
+项目模板地址。支持 git地址 和 本地目录
+
+git地址格式请参考[degit](https://github.com/daniel-dx/degit)
 
 ```js
-// 例子
+// git地址 例子
 {
   main: {
     tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo",
+  }
+}
+
+// 本地目录 例子
+{
+  main: {
+    tmplSource: "/Users/daniel/Projects/vue3-ncgen-demo",
   }
 }
 ```
