@@ -30,14 +30,35 @@ $ ncgen genConf
 
 ```sh 
 # 运行主命令生成项目脚手架
-$ ncgen path/to/ncgen-config.js
+$ ncgen ./ncgen-config.js
 
 # 查看所有子命令
-$ ncgen path/to/ncgen-config.js::help
+$ ncgen ./ncgen-config.js::help
 
 # 运行子命令在生成的项目中新增组件
-$ ncgen path/to/ncgen-config.js::add-component
+$ ncgen ./ncgen-config.js::add-component
 ```
+
+::: tip 提示
+如需更详细的手把手的教程，请阅读这篇文章：[新生代小鲜肉之代码生成器](https://juejin.cn/post/6960427434235658277)
+:::
+
+## NodeJS API 运行
+
+ncgen 也支持通过 NodeJS API（非命令行） 的方式运行，示例如下。
+
+```js
+import { generate, CommandType } from "ncgen"
+
+// 执行主命令
+generate('path/to/ncgen-config.js', { type: CommandType.MAIN })
+
+// 执行子命令
+generate('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component' })
+
+```
+
+该 API 的具体介绍请查看 [generate](/zh/API.html#generate-config-options-%E2%87%92-promise)
 
 ## 命令行
 

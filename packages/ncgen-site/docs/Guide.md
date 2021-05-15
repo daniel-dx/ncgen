@@ -30,14 +30,35 @@ Copy the content of [example ncgen-config.js corresponding to the template proje
 
 ```sh
 # Run the main command to generate project scaffolding
-$ ncgen path/to/ncgen-config.js
+$ ncgen ./ncgen-config.js
 
 # View all subcommands
-$ ncgen path/to/ncgen-config.js::help
+$ ncgen ./ncgen-config.js::help
 
 # Run subcommands to add new component to the generated project
-$ ncgen path/to/ncgen-config.js::add-component
+$ ncgen ./ncgen-config.js::add-component
 ```
+
+::: tip Tips
+For a more detailed hands-on tutorial, please read this article：[The new generation of code generator](https://dev.to/danieldx/the-new-generation-of-code-generator-26h1)
+:::
+
+## Run by NodeJS API
+
+ncgen also supports running through NodeJS API (not command line), the example is as follows.
+
+```js
+import {generate, CommandType} from "ncgen"
+
+// Execute the main command
+generate('path/to/ncgen-config.js', {type: CommandType.MAIN })
+
+// Execute subcommand
+generate('path/to/ncgen-config.js', {type: CommandType.SUB, command:'add-component' })
+
+```
+
+For the specific introduction of the API, please see [generate](/API.html#generate-config-options-%E2%87%92-promise)
 
 ## Command Line
 
