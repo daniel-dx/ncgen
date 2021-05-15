@@ -151,7 +151,12 @@ function resolveValue(val) {
 }
 
 async function installDependencies(installDeptConfig) {
-  if (installDeptConfig.skip || !installDeptConfig.command) return;
+  if (
+    !installDeptConfig ||
+    installDeptConfig.skip ||
+    !installDeptConfig.command
+  )
+    return;
 
   log.info(
     installDeptConfig.tips ||
@@ -161,7 +166,8 @@ async function installDependencies(installDeptConfig) {
   const spinner = ora("Installing").start();
 
   const subprocess = execa.command(installDeptConfig.command, {
-    cwd: getProjectRootPath()
+    cwd: getProjectRootPath(),
+    shell: true
   });
   subprocess.stdout.pipe(process.stdout);
 

@@ -20,7 +20,6 @@ test("log", () => {
   log.info("info");
   log.warn("warn");
   log.success("success");
-  log.error("error");
 });
 
 test("lodash", () => {
@@ -142,6 +141,31 @@ test("tmplSource is local dir", async () => {
     }
   });
   expectFileExist(path.resolve(genProjectPath, "ncgen-config.js"), true);
+  fs.removeSync(genProjectPath);
+});
+
+test("run multi commands in installDependencies", async () => {
+  process.chdir(__dirname);
+  const projectName = "test-demo-dept";
+  const genProjectPath = path.resolve(__dirname, projectName);
+  const config = {
+    main: {
+      tmplSource: "https://github.com/daniel-dx/vue3-ncgen-demo.git",
+      installDependencies: {
+        skip: false,
+        tips: "Dependencies are being installed, it may take a few minutes",
+        command: "touch pre.txt && npm i && touch post.txt",
+      }
+    }
+  };
+  await generate(config, {
+    type: CommandType.MAIN,
+    answers: {
+      projectName
+    }
+  });
+  expectFileExist(path.resolve(genProjectPath, "pre.txt"), true);
+  expectFileExist(path.resolve(genProjectPath, "post.txt"), true);
   fs.removeSync(genProjectPath);
 });
 
