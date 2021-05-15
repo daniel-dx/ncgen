@@ -1,4 +1,8 @@
-export * as api from "./api";
-export { log } from "util";
+import * as ncgenApi from "./api";
+import lodash from "lodash";
 
-export * as _ from "lodash";
+export const api = ncgenApi;
+export { log } from "util";
+export const _ = lodash;
+
+// export default ncgen = ncgenApi.ncgen;

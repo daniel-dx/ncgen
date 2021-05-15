@@ -6,22 +6,22 @@ import _ from "lodash";
 export const homePath = path.resolve(os.homedir(), ".ncgen");
 
 export const answers = {
-  projectName: "",
+  projectName: ""
 };
 
 export const data = {
-  isSub: false,
+  isSub: false
 };
 
 export function getFnContext() {
-  Object.keys(answers).forEach((field) => {
+  Object.keys(answers).forEach(field => {
     if (_.isString(answers[field])) {
       const objKey = `${field}Obj`;
       answers[objKey] = answers[objKey] || transformStr(answers[field]);
     }
   });
   return {
-    $answers: answers,
+    $answers: answers
   };
 }
 
@@ -36,4 +36,10 @@ export function getLocationOfTheProjectClone() {
   return !data.isSub
     ? getProjectRootPath()
     : path.resolve(homePath, "temp_clone");
+}
+
+export function initContext() {
+  Object.keys(answers).forEach(key => delete answers[key]);
+  answers.projectName = "";
+  data.isSub = false;
 }

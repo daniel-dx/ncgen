@@ -34,7 +34,7 @@ export default {
 
     // Install dependencies. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#installdependencies
     installDependencies: {
-      skip: false,
+      skip: true,
       tips: "Dependencies are being installed, it may take a few minutes",
       command: "npm i"
     },

@@ -106,3 +106,4 @@ dist
 .history
 test/temp
 package-lock.json
+test-demo-*

@@ -22,18 +22,20 @@ import {
   getLocationOfTheProjectClone,
   homePath,
   getFnContext,
+  initContext
 } from "./context";
+import { CommandType } from "./api";
 
 function cloneResource(tmplSource, isTemp = false) {
   const spinner = ora("Downloading").start();
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const emitter = degit(tmplSource, {
       cache: false,
       force: true,
-      verbose: true,
+      verbose: true
     });
 
-    emitter.on("info", (info) => {
+    emitter.on("info", info => {
       debug(info.message);
     });
 
@@ -49,7 +51,7 @@ function cloneResource(tmplSource, isTemp = false) {
 }
 
 function prompt(promptConfig) {
-  if (!promptConfig) return
+  if (!promptConfig) return;
 
   const _promptConfig = [...promptConfig];
   if (!data.isSub) {
@@ -57,31 +59,31 @@ function prompt(promptConfig) {
       type: "input",
       name: "projectName",
       message: "What's your project name",
-      validate: function (input) {
+      validate: function(input) {
         if (!input) return "Please provide project name";
         return true;
-      },
+      }
     });
   }
-  return inquirer.prompt(_promptConfig).then((answers) => {
+  return inquirer.prompt(_promptConfig).then(answers => {
     Object.assign(_answers, answers);
     debug(_answers);
   });
 }
 
 function updateFiles(filesConfig) {
-  if (!filesConfig) return
+  if (!filesConfig) return;
 
   return Promise.all(
-    Object.keys(filesConfig).map((filePath) => {
+    Object.keys(filesConfig).map(filePath => {
       const files = glob.sync(path.resolve(getProjectRootPath(), filePath));
       const handleFn = filesConfig[filePath];
       return Promise.race(
-        files.map(async (filePath) => {
+        files.map(async filePath => {
           const content = await fs.readFile(filePath, "utf-8");
           const updatedContent = await handleFn.call(getFnContext(), content, {
             absolutePath: filePath,
-            relativePath: filePath.replace(getProjectRootPath() + path.sep, ""),
+            relativePath: filePath.replace(getProjectRootPath() + path.sep, "")
           });
           if (updatedContent)
             await fs.writeFile(filePath, updatedContent, "utf-8");
@@ -95,7 +97,7 @@ function updateFiles(filesConfig) {
 function removeFiles(files = []) {
   if (!files) return;
 
-  return del(files.map((file) => path.resolve(getProjectRootPath(), file)));
+  return del(files.map(file => path.resolve(getProjectRootPath(), file)));
 }
 
 function complete(completeMsg) {
@@ -114,7 +116,7 @@ function checkConfig(config) {
     throw "main.tmplSource must not be null";
 
   const found = (resolveValue(config.prompt) || []).find(
-    (item) => item.name === "projectName"
+    item => item.name === "projectName"
   );
   if (found) {
     throw "projectName is a built-in prompt item name and cannot be used, please replace one";
@@ -149,7 +151,7 @@ async function installDependencies(installDeptConfig) {
   const spinner = ora("Installing").start();
 
   const subprocess = execa.command(installDeptConfig.command, {
-    cwd: getProjectRootPath(),
+    cwd: getProjectRootPath()
   });
   subprocess.stdout.pipe(process.stdout);
 
@@ -159,7 +161,7 @@ async function installDependencies(installDeptConfig) {
 }
 
 async function addFilesTo(addFilesToConfig) {
-  if (!addFilesToConfig) return
+  if (!addFilesToConfig) return;
 
   await Promise.all(
     _.map(addFilesToConfig, (val, key) => {
@@ -173,7 +175,7 @@ async function addFilesTo(addFilesToConfig) {
 }
 
 async function addFiles(addFilesConfig) {
-  if (!addFilesConfig) return
+  if (!addFilesConfig) return;
 
   return Promise.all(
     _.map(addFilesConfig, (val, toPath) => {
@@ -187,7 +189,7 @@ async function addFiles(addFilesConfig) {
   );
 }
 
-async function handleMain(config, genConfig) {
+async function handleMain(config, genConfig, answers) {
   debug(config);
 
   try {
@@ -198,7 +200,11 @@ async function handleMain(config, genConfig) {
     await welcome(resolveValue(config.welcome), genConfig);
 
     // 提示信息
-    await prompt(resolveValue(config.prompt));
+    if (answers) {
+      Object.assign(_answers, answers);
+    } else {
+      await prompt(resolveValue(config.prompt));
+    }
 
     // clone 资源
     await cloneResource(resolveValue(config.tmplSource));
@@ -219,7 +225,7 @@ async function handleMain(config, genConfig) {
   }
 }
 
-async function handleSubcommand(config) {
+async function handleSubcommand(config, answers) {
   debug(config);
 
   try {
@@ -227,7 +233,11 @@ async function handleSubcommand(config) {
     await checkConfig(config);
 
     // 提示信息
-    await prompt(resolveValue(config.prompt));
+    if (answers) {
+      Object.assign(_answers, answers);
+    } else {
+      await prompt(resolveValue(config.prompt));
+    }
 
     // clone 资源
     if (config.tmplSource) {
@@ -293,7 +303,7 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
     .command("genConf")
     .description("Generate configuration file")
     .option("-n --name <name>", "Configuration file name")
-    .action(function (option) {
+    .action(function(option) {
       let name = option.name || "ncgen-config.js";
       name = name.search(/\.js$/) === -1 ? name + ".js" : name;
       fs.writeFileSync(
@@ -304,7 +314,7 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
       log.success(`Generated successfully: ${name}`);
     });
 
-  program.on("command:*", function () {
+  program.on("command:*", function() {
     debug("Avoid using <configuration file path> as an unknow command");
   });
 
@@ -321,34 +331,65 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
     return;
   }
 
+  if (subCommand) {
+    await generate(genConfigUrl, {
+      type: CommandType.SUB,
+      command: subCommand
+    });
+  } else {
+    await generate(genConfigUrl, {
+      type: CommandType.MAIN
+    });
+  }
+}
+
+export async function generate(config, options = { type: CommandType.MAIN }) {
+  if (options.type === CommandType.SUB && !options.command) {
+    log.error(`options.command is required`);
+    return;
+  }
+
+  initContext();
+
   // 获取代码生成配置文件
   let genConfig;
-  const isRemoteUrl = /http[s]?:\/\/.*/.test(genConfigUrl);
-  let genConfigContent = "";
-  if (isRemoteUrl) {
-    const res = await axios.get(genConfigUrl);
-    genConfigContent = res.data;
-  } else {
-    genConfigContent = requireText(path.resolve(genConfigUrl), require);
-  }
-  const filePath = path.resolve(
-    homePath,
-    "configuration",
-    md5(genConfigContent) + ".js"
-  );
-  if (!fs.existsSync(filePath)) {
-    const { stdout: globalNodeModulesPath } = execa.commandSync("npm root -g");
-    // 将 import "ncgen" 替换成引用全局的模块路径
-    genConfigContent = genConfigContent.replace(
-      /from\s+['"](ncgen)['"]/,
-      `from "${globalNodeModulesPath}/$1"`
+  if (_.isString(config)) {
+    // 如果是配置文件路径
+    const genConfigUrl = config;
+    const isRemoteUrl = /http[s]?:\/\/.*/.test(genConfigUrl);
+    let genConfigContent = "";
+    if (isRemoteUrl) {
+      const res = await axios.get(genConfigUrl);
+      genConfigContent = res.data;
+    } else {
+      genConfigContent = requireText(path.resolve(genConfigUrl), require);
+    }
+    const filePath = path.resolve(
+      homePath,
+      "configuration",
+      md5(genConfigContent) + ".js"
     );
-    fs.writeFileSync(filePath, genConfigContent, "utf8");
+    if (!fs.existsSync(filePath)) {
+      const { stdout: globalNodeModulesPath } = execa.commandSync(
+        "npm root -g"
+      );
+      // 有全局安装时将 import "ncgen" 替换成引用全局的模块路径
+      if (fs.existsSync(path.resolve(globalNodeModulesPath, "ncgen"))) {
+        genConfigContent = genConfigContent.replace(
+          /from\s+['"](ncgen)['"]/,
+          `from "${globalNodeModulesPath}/$1"`
+        );
+        fs.writeFileSync(filePath, genConfigContent, "utf8");
+      }
+    }
+    genConfig = require(filePath);
+  } else {
+    genConfig = config;
   }
-  genConfig = require(filePath);
 
   // 执行子命令，即插入代码片段
-  if (subCommand) {
+  if (options.type === CommandType.SUB) {
+    const subCommand = options.command;
     const { sub: config } = genConfig.default || genConfig;
     const commandConfig = config[subCommand];
     if (!commandConfig) {
@@ -356,22 +397,24 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
         log.error(`${subCommand} is not a valid subcommand`);
       log.info("Valid subcommands:");
       log.success(`
-${Object.keys(config).map(key => {
-  return `- ${key}\n${config[key].description || ''}\n\n`
-}).join('')}
+${Object.keys(config)
+  .map(key => {
+    return `- ${key}\n${config[key].description || ""}\n\n`;
+  })
+  .join("")}
       `);
       return;
     }
     // 子命令模式
     data.isSub = true;
-    handleSubcommand(commandConfig);
+    await handleSubcommand(commandConfig, options.answers);
     return;
   }
 
   // 执行主命令，即生成项目脚手架
   const _genConfig = genConfig.default || genConfig;
-  const { main: config } = _genConfig;
-  handleMain(config, _genConfig);
+  const { main: mainConfig } = _genConfig;
+  await handleMain(mainConfig, _genConfig, options.answers);
 }
 
 function checkVersion() {

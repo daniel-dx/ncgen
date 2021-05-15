@@ -2,8 +2,48 @@ import _ from "lodash";
 import path from "path";
 import fs from "fs-extra";
 import { getProjectRootPath } from "./context";
+import { generate } from "./cli";
 
 /** 代码注释格式参考：https://jsdoc.app/ */
+
+/**
+ * Command type enum values: CommandType.MAIN, CommandType.SUB
+ */
+export const CommandType = {
+  MAIN: "main",
+  SUB: "sub"
+};
+
+/**
+ * Call ncgen through node api form
+ * @param {(string|object)} config - Configuration file path or configuration object
+ * @param {object[]} options - Options
+ * @param {string} options[].type - CommandType.MAIN or CommandType.SUB
+ * @param {string} options[].command - The name of the executed subcommand. Only needed when type is CommandType.SUB
+ * @param {object} options[].answers - Provided when you want to skip interactive questioning
+ * @returns {promise} Promise
+ * @example
+ * import ncgen, { CommandType } from "ncgen"
+ *
+ * // Execute the main command
+ * ncgen('path/to/ncgen-config.js', { type: CommandType.MAIN })
+ * // or
+ * const ncgenConfig = require('path/to/ncgen-config.js')
+ * ncgen(ncgenConfig, { type: CommandType.MAIN })
+ *
+ * // Execute the main command with answer data
+ * ncgen('path/to/ncgen-config.js', { type: CommandType.MAIN, answers: { projectName: 'demo', author: 'daniel' } })
+ *
+ * // Execute the sub command
+ * ncgen('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component' })
+ *
+ * // Execute the sub command with answer data
+ * ncgen('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component', answers: { category: 'busi', name: 'hello world' } })
+ *
+ */
+export function ncgen(config, options) {
+  return generate(config, options);
+}
 
 /**
  * Convert input string into a variety of commonly used formats
@@ -176,7 +216,7 @@ function _listDirs(dirPath, excludes, type) {
 /**
  * List the directory name of the specified path
  * @param {string} dirPath - Specify the path
- * @param {string[]|function} [excludes] - Excluded directory name
+ * @param {(string[]|function)} [excludes] - Excluded directory name
  * @returns {string[]} directory name list
  * @example
  *
@@ -210,7 +250,7 @@ export function listDirs(dirPath, excludes) {
 /**
  * List the file name of the specified path
  * @param {string} dirPath - Specify the path
- * @param {string[]|function} [excludes] - Excluded file name
+ * @param {(string[]|function)} [excludes] - Excluded file name
  * @returns {string[]} file name list
  * @example
  *
