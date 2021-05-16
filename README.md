@@ -19,7 +19,6 @@ $ yarn install  # yarn install --ignore-engines # If your node version < 14
 ### Test
 ```bash
 $ cd packages/ncgen
-$ npm link
 $ npm test
 ```
 

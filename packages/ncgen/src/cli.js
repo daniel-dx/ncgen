@@ -359,7 +359,11 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
   }
 }
 
-export async function generate(config, options = { type: CommandType.MAIN }, calledByCli = true) {
+export async function generate(
+  config,
+  options = { type: CommandType.MAIN },
+  calledByCli = true
+) {
   if (options.type === CommandType.SUB && !options.command) {
     log.error(`options.command is required`);
     return;
@@ -385,18 +389,18 @@ export async function generate(config, options = { type: CommandType.MAIN }, cal
       "configuration",
       md5(genConfigContent) + ".js"
     );
-    if (!fs.existsSync(filePath)) {
+    // 命令行调用，将 import "ncgen" 替换成引用全局的模块路径
+    if (calledByCli) {
       const { stdout: globalNodeModulesPath } = execa.commandSync(
         "npm root -g"
       );
-      // 有全局安装时将 import "ncgen" 替换成引用全局的模块路径
-      if (calledByCli && fs.existsSync(path.resolve(globalNodeModulesPath, "ncgen"))) {
-        genConfigContent = genConfigContent.replace(
-          /from\s+['"](ncgen)['"]/,
-          `from "${globalNodeModulesPath}/$1"`
-        );
-        fs.writeFileSync(filePath, genConfigContent, "utf8");
-      }
+      genConfigContent = genConfigContent.replace(
+        /from\s+['"](ncgen)['"]/,
+        `from "${globalNodeModulesPath}/$1"`
+      );
+      fs.writeFileSync(filePath, genConfigContent, "utf8");
+    } else {
+      fs.writeFileSync(filePath, genConfigContent, "utf8");
     }
     genConfig = require(filePath);
   } else {
