@@ -51,11 +51,10 @@ ncgen also supports running through NodeJS API (not command line), the example i
 const { generate } = require("ncgen"); // or import { generate } from "ncgen"
 
 // Execute the main command
-generate('path/to/ncgen-config.js', {type: 'm' })
+generate("path/to/ncgen-config.js", { type: "m" });
 
 // Execute subcommand
-generate('path/to/ncgen-config.js', {type: 's', command:'add-component' })
-
+generate("path/to/ncgen-config.js", { type: "s", command: "add-component" });
 ```
 
 For the specific introduction of the API, please see [generate](/API.html#generate-config-options-%E2%87%92-promise)
