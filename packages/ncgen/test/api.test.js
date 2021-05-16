@@ -72,16 +72,16 @@ test("replace", () => {
 test("listDirs", () => {
   const rootPath = path.resolve(__dirname, "../");
   const dirs = listDirs(rootPath);
-  expect(dirs).toEqual(["bin", "node_modules", "src", "test"]);
+  expect(dirs).toEqual(["bin", "lib", "node_modules", "src", "test"]);
 
   const dirs1 = listDirs(rootPath, ["bin", "node.*"]);
-  expect(dirs1).toEqual(["src", "test"]);
+  expect(dirs1).toEqual(["lib", "src", "test"]);
 
   const dirs2 = listDirs(
     rootPath,
     dir => ["node_modules", "bin"].indexOf(dir) >= 0
   );
-  expect(dirs2).toEqual(["src", "test"]);
+  expect(dirs2).toEqual(["lib", "src", "test"]);
 });
 
 test("listFiles", () => {
@@ -134,7 +134,7 @@ test("tmplSource is local dir", async () => {
     }
   };
   await generate(config, {
-    type: 'm',
+    type: "m",
     answers: {
       projectName
     }
@@ -153,12 +153,12 @@ test("run multi commands in installDependencies", async () => {
       installDependencies: {
         skip: false,
         tips: "Dependencies are being installed, it may take a few minutes",
-        command: "touch pre.txt && npm i && touch post.txt",
+        command: "touch pre.txt && npm i && touch post.txt"
       }
     }
   };
   await generate(config, {
-    type: 'm',
+    type: "m",
     answers: {
       projectName
     }
@@ -192,7 +192,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ projectName, author: "daniel" });
     await generate(ncgenConfigPath, {
-      type: 'm'
+      type: "m"
     });
 
     expectFileContain(path.resolve(genProjectPath, "package.json"), [
@@ -210,7 +210,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
     await generate(ncgenConfigPath, {
-      type: 's',
+      type: "s",
       command: "add-component"
     });
     expectFileExist(
@@ -242,7 +242,7 @@ describe("ncgen generate", () => {
     let { path: genProjectPath, name: projectName } = getGenProjectInfo(2);
 
     await generate(ncgenConfigPath, {
-      type: 'm',
+      type: "m",
       answers: { projectName, author: "daniel" }
     });
 
@@ -259,7 +259,7 @@ describe("ncgen generate", () => {
 
     process.chdir(genProjectPath);
     await generate(ncgenConfigPath, {
-      type: 's',
+      type: "s",
       command: "add-component",
       answers: { category: "busi", name: "hello ncgen" }
     });
@@ -294,7 +294,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ projectName, author: "daniel" });
     await generate(ncgenConfig, {
-      type: 'm'
+      type: "m"
     });
 
     expectFileContain(path.resolve(genProjectPath, "package.json"), [
@@ -312,7 +312,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
     await generate(ncgenConfig, {
-      type: 's',
+      type: "s",
       command: "add-component"
     });
     expectFileExist(

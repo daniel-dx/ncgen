@@ -105,5 +105,6 @@ dist
 
 .history
 test/temp
+lib
 package-lock.json
 test-demo-*

@@ -1,9 +1,9 @@
 {
   "name": "ncgen",
-  "version": "0.1.14",
+  "version": "0.1.16",
   "repository": "https://github.com/daniel-dx/ncgen.git",
   "author": "daniel.xiao <dxweixiao@tencent.com>",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -12,8 +12,9 @@
     "ncgen": "./bin/ncgen"
   },
   "scripts": {
+    "build": "babel src --out-dir lib",
     "test": "jest",
-    "prepare": "npm run test"
+    "prepare": "npm run build && npm test"
   },
   "dependencies": {
     "@daniel-dx/degit": "^2.9.0",
@@ -35,8 +36,16 @@
     "update-notifier": "^5.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.14.0",
     "jest": "^26.6.3",
     "jest-esm-transformer": "^1.0.0",
     "jsdoc-to-markdown": "^7.0.1"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-transform-modules-commonjs"
+    ]
   }
 }
