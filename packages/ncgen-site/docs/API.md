@@ -1,8 +1,8 @@
 
 # API
 
-```
-import { generate, api, log, _ } from "ncgen";
+```js
+const { generate, api, log, _ } = require("ncgen"); // or import { generate, api, log, _ } from "ncgen";
 ```
 <a name="generate"></a>
 
@@ -21,7 +21,7 @@ Call ncgen through node api form
 
 **Example**  
 ```js
-import { generate } from "ncgen"
+const { generate } = require("ncgen"); // or import { generate } from "ncgen"
 
 // Execute the main command
 generate('path/to/ncgen-config.js', { type: 'm' })

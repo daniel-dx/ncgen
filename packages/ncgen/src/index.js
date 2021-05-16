@@ -16,7 +16,7 @@ export const _ = lodash;
  * @param {object} options.answers - Provided when you want to skip interactive questioning
  * @returns {promise} Promise
  * @example
- * import { generate } from "ncgen"
+ * const { generate } = require("ncgen"); // or import { generate } from "ncgen"
  *
  * // Execute the main command
  * generate('path/to/ncgen-config.js', { type: 'm' })

@@ -1,6 +1,6 @@
-import { api, log, _ } from "ncgen";
+const { api, log, _ } = require("ncgen");
 
-export default {
+module.exports = {
   // The main command. Used to generate project scaffolding. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#main
   main: {
     // Show welcome message. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#welcome

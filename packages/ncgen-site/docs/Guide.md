@@ -48,7 +48,7 @@ For a more detailed hands-on tutorial, please read this article：[The new gener
 ncgen also supports running through NodeJS API (not command line), the example is as follows.
 
 ```js
-import {generate} from "ncgen"
+const { generate } = require("ncgen"); // or import { generate } from "ncgen"
 
 // Execute the main command
 generate('path/to/ncgen-config.js', {type: 'm' })

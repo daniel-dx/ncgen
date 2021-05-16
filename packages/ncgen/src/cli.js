@@ -394,12 +394,21 @@ export async function generate(
       const { stdout: globalNodeModulesPath } = execa.commandSync(
         "npm root -g"
       );
-      genConfigContent = genConfigContent.replace(
-        /from\s+['"](ncgen)['"]/,
-        `from "${globalNodeModulesPath}/$1"`
-      );
+      genConfigContent = genConfigContent
+        .replace(/from\s+['"](ncgen)['"]/, `from "${globalNodeModulesPath}/$1"`)
+        .replace(
+          /require\(['"](ncgen)['"]\)/,
+          `require("${globalNodeModulesPath}/$1")`
+        );
       fs.writeFileSync(filePath, genConfigContent, "utf8");
     } else {
+      const nodeModulesPath = path.resolve(path.dirname(module.path));
+      genConfigContent = genConfigContent
+        .replace(/from\s+['"](ncgen)['"]/, `from "${nodeModulesPath}"`)
+        .replace(
+          /require\(['"](ncgen)['"]\)/,
+          `require("${nodeModulesPath}")`
+        );
       fs.writeFileSync(filePath, genConfigContent, "utf8");
     }
     genConfig = require(filePath);
