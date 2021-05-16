@@ -29,7 +29,7 @@ Promise.all([
         );
       } else if (idx === 1) {
         apiDocConent = apiDocConent.replace(
-          /## generate\(config, options\)[\s\S]*## api/,
+          /<a name="generate"><\/a>[\s\S]*## api/,
           `${mdContent}\n## api`
         );
       }
