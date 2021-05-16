@@ -1,0 +1,21 @@
+{
+  "name": "@ncgen/create-app",
+  "version": "0.1.6",
+  "main": "bin/cli.js",
+  "bin": {
+    "create-app": "bin/cli.js"
+  },
+  "scripts": {
+    "dev": "node bin/cli",
+    "release": "npm publish"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "commander": "^7.2.0",
+    "esm": "^3.2.25",
+    "ncgen": "^0.2.0"
+  }
+}
