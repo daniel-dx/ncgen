@@ -28,7 +28,7 @@ $ ncgen genConf
 
 4. 运行
 
-```sh 
+```sh
 # 运行主命令生成项目脚手架
 $ ncgen ./ncgen-config.js
 
@@ -51,14 +51,39 @@ ncgen 也支持通过 NodeJS API（非命令行） 的方式运行，示例如�
 const { generate } = require("ncgen"); // or import { generate } from "ncgen"
 
 // 执行主命令
-generate('path/to/ncgen-config.js', { type: 'm' })
+generate("path/to/ncgen-config.js", { type: "m" });
 
 // 执行子命令
-generate('path/to/ncgen-config.js', { type: 's', command: 'add-component' })
-
+generate("path/to/ncgen-config.js", { type: "s", command: "add-component" });
 ```
 
 该 API 的具体介绍请查看 [generate](/zh/API.html#generate-config-options-%E2%87%92-promise)
+
+## 属于你的生成器
+
+假设你现在想开发一个叫 **cook** 的代码生成器工具，你只需按照以下步骤即可快速完成开发
+
+第一步：创建代码生成器项目
+
+```sh
+$ npm init @ncgen/app
+```
+
+第二步：按照你代码生成器的逻辑修改 `ncgen-config.js`
+
+> 创建子命令可用以下命令完成，以省去你复制粘贴的操作
+
+```sh
+cd cook
+$ npm init @ncgen/app add-sub
+```
+
+第三步：发布你的代码生成器
+
+```sh
+$ cd cook
+$ npm run release
+```
 
 ## 命令行
 

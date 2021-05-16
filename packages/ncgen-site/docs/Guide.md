@@ -60,6 +60,32 @@ generate('path/to/ncgen-config.js', {type: 's', command:'add-component' })
 
 For the specific introduction of the API, please see [generate](/API.html#generate-config-options-%E2%87%92-promise)
 
+## Your own generator
+
+Suppose you now want to develop a code generator tool called **cook**, you only need to follow the steps below to quickly complete the development
+
+Step 1: Create a code generator project
+
+```sh
+$ npm init @ncgen/app
+```
+
+Step 2: Modify `ncgen-config.js` according to the logic of your code generator
+
+> Create sub-commands can be completed with the following commands to save you from copying and pasting
+
+```sh
+cd cook
+$ npm init @ncgen/app add-sub
+```
+
+Step 3: Publish your code generator
+
+```sh
+$ cd cook
+$ npm run release
+```
+
 ## Command Line
 
 - Generate configuration files

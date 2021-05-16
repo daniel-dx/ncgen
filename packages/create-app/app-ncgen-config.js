@@ -10,7 +10,7 @@ module.exports = {
     prompt: [],
 
     // Source of project template. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#tmplsource
-    tmplSource: "/Users/daniel/Projects/Owner/ncgen/packages/create-app",
+    tmplSource: "daniel-dx/ncgen/packages/create-app",
 
     // Update files. Doc: https://daniel-dx.github.io/ncgen/CONFIG.html#updatefiles
     updateFiles: {
@@ -44,10 +44,17 @@ $ ${answers.projectNameObj.kebabCase} -h
 
 ## Develop
 \`\`\`sh
-$ npm run dev
-$ npm run dev -- subcommand-name
+# Debug main command
+$ node bin/cli
+
+# Debug subcommand
+$ node bin/cli subcommand-name
 \`\`\`
 
+## Publish
+\`\`\`sh
+$ npm run release
+\`\`\`
 `;
       }
     },
@@ -66,7 +73,7 @@ $ npm run dev -- subcommand-name
     complete: `
 Congratulations, the operation is successful!
 Now you can modify the content of ncgen-config.js according to your code generator logic.
-Run 'npm run dev' to debug
+Run 'node bin/cli' to debug
 `
   },
 
@@ -176,7 +183,7 @@ Run 'npm run dev' to debug
         return `
 Congratulations, the operation is successful!
 Now you can start the development of your subcommand (${this.$answers.nameObj.kebabCase}) in ncgen-config.js.
-Run 'npm run dev -- ${this.$answers.nameObj.kebabCase}' to debug
+Run 'node bin/cli ${this.$answers.nameObj.kebabCase}' to debug
         `
       }
     }
