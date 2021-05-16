@@ -48,13 +48,13 @@ For a more detailed hands-on tutorial, please read this article：[The new gener
 ncgen also supports running through NodeJS API (not command line), the example is as follows.
 
 ```js
-import {generate, CommandType} from "ncgen"
+import {generate} from "ncgen"
 
 // Execute the main command
-generate('path/to/ncgen-config.js', {type: CommandType.MAIN })
+generate('path/to/ncgen-config.js', {type: 'm' })
 
 // Execute subcommand
-generate('path/to/ncgen-config.js', {type: CommandType.SUB, command:'add-component' })
+generate('path/to/ncgen-config.js', {type: 's', command:'add-component' })
 
 ```
 

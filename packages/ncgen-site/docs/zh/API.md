@@ -2,19 +2,8 @@
 # API
 
 ```
-import { generate, CommandType, api, log, _ } from "ncgen";
+import { generate, api, log, _ } from "ncgen";
 ```
-
-## CommandType : <code>enum</code>
-Enum for command type.
-
-
-**Properties**
-
-| Name | Type |
-| --- | --- |
-| MAIN | <code>string</code> | 
-| SUB | <code>string</code> | 
 
 <a name="generate"></a>
 
@@ -27,28 +16,28 @@ Call ncgen through node api form
 
 - config <code>string</code> | <code>object</code> - Configuration file path or configuration object
 - options <code>object</code> - Options
-    - .type <code>string</code> - CommandType.MAIN or CommandType.SUB
-    - .command <code>string</code> - The name of the executed subcommand. Only needed when type is CommandType.SUB
+    - .type <code>string</code> - "m" (main command) or "s" (subcommand)
+    - .command <code>string</code> - The name of the executed subcommand. Only needed when type is "s"
     - .answers <code>object</code> - Provided when you want to skip interactive questioning
 
 **Example**  
 ```js
-import { generate, CommandType } from "ncgen"
+import { generate } from "ncgen"
 
 // Execute the main command
-generate('path/to/ncgen-config.js', { type: CommandType.MAIN })
+generate('path/to/ncgen-config.js', { type: 'm' })
 // or
 const ncgenConfig = require('path/to/ncgen-config.js')
-generate(ncgenConfig, { type: CommandType.MAIN })
+generate(ncgenConfig, { type: 'm' })
 
 // Execute the main command with answer data
-generate('path/to/ncgen-config.js', { type: CommandType.MAIN, answers: { projectName: 'demo', author: 'daniel' } })
+generate('path/to/ncgen-config.js', { type: 'm', answers: { projectName: 'demo', author: 'daniel' } })
 
 // Execute the sub command
-generate('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component' })
+generate('path/to/ncgen-config.js', { type: 's', command: 'add-component' })
 
 // Execute the sub command with answer data
-generate('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component', answers: { category: 'busi', name: 'hello world' } })
+generate('path/to/ncgen-config.js', { type: 's', command: 'add-component', answers: { category: 'busi', name: 'hello world' } })
 ```
 
 ## api

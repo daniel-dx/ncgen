@@ -48,13 +48,13 @@ $ ncgen ./ncgen-config.js::add-component
 ncgen 也支持通过 NodeJS API（非命令行） 的方式运行，示例如下。
 
 ```js
-import { generate, CommandType } from "ncgen"
+import { generate } from "ncgen"
 
 // 执行主命令
-generate('path/to/ncgen-config.js', { type: CommandType.MAIN })
+generate('path/to/ncgen-config.js', { type: 'm' })
 
 // 执行子命令
-generate('path/to/ncgen-config.js', { type: CommandType.SUB, command: 'add-component' })
+generate('path/to/ncgen-config.js', { type: 's', command: 'add-component' })
 
 ```
 

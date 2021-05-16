@@ -3,7 +3,6 @@ const path = require("path");
 const fs = require("fs-extra");
 const {
   generate,
-  CommandType,
   api: {
     transformStr,
     replace,
@@ -135,7 +134,7 @@ test("tmplSource is local dir", async () => {
     }
   };
   await generate(config, {
-    type: CommandType.MAIN,
+    type: 'm',
     answers: {
       projectName
     }
@@ -159,7 +158,7 @@ test("run multi commands in installDependencies", async () => {
     }
   };
   await generate(config, {
-    type: CommandType.MAIN,
+    type: 'm',
     answers: {
       projectName
     }
@@ -193,7 +192,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ projectName, author: "daniel" });
     await generate(ncgenConfigPath, {
-      type: CommandType.MAIN
+      type: 'm'
     });
 
     expectFileContain(path.resolve(genProjectPath, "package.json"), [
@@ -211,7 +210,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
     await generate(ncgenConfigPath, {
-      type: CommandType.SUB,
+      type: 's',
       command: "add-component"
     });
     expectFileExist(
@@ -243,7 +242,7 @@ describe("ncgen generate", () => {
     let { path: genProjectPath, name: projectName } = getGenProjectInfo(2);
 
     await generate(ncgenConfigPath, {
-      type: CommandType.MAIN,
+      type: 'm',
       answers: { projectName, author: "daniel" }
     });
 
@@ -260,7 +259,7 @@ describe("ncgen generate", () => {
 
     process.chdir(genProjectPath);
     await generate(ncgenConfigPath, {
-      type: CommandType.SUB,
+      type: 's',
       command: "add-component",
       answers: { category: "busi", name: "hello ncgen" }
     });
@@ -295,7 +294,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ projectName, author: "daniel" });
     await generate(ncgenConfig, {
-      type: CommandType.MAIN
+      type: 'm'
     });
 
     expectFileContain(path.resolve(genProjectPath, "package.json"), [
@@ -313,7 +312,7 @@ describe("ncgen generate", () => {
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
     await generate(ncgenConfig, {
-      type: CommandType.SUB,
+      type: 's',
       command: "add-component"
     });
     expectFileExist(

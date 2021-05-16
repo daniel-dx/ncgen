@@ -11,9 +11,16 @@ Check out our docs at https://daniel-dx.github.io/ncgen/.
 
 ## Contribution
 
+### Install
 ```bash
 $ yarn install  # yarn install --ignore-engines # If your node version < 14
-$ DEBUG=ncgen node ./packages/ncgen/bin/ncgen
+```
+
+### Test
+```bash
+$ cd packages/ncgen
+$ npm link
+$ npm test
 ```
 
 ## Contributors

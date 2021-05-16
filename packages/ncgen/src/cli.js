@@ -25,9 +25,9 @@ import {
   initContext
 } from "./context";
 
-export const CommandType = {
-  MAIN: "main",
-  SUB: "sub"
+const CommandType = {
+  MAIN: "m",
+  SUB: "s"
 };
 
 function cloneResource(tmplSource, isTemp = false) {
@@ -359,7 +359,7 @@ Use ncgen <configuration file path>::help to see all valid subcommands`
   }
 }
 
-export async function generate(config, options = { type: CommandType.MAIN }) {
+export async function generate(config, options = { type: CommandType.MAIN }, calledByCli = true) {
   if (options.type === CommandType.SUB && !options.command) {
     log.error(`options.command is required`);
     return;
@@ -390,7 +390,7 @@ export async function generate(config, options = { type: CommandType.MAIN }) {
         "npm root -g"
       );
       // 有全局安装时将 import "ncgen" 替换成引用全局的模块路径
-      if (fs.existsSync(path.resolve(globalNodeModulesPath, "ncgen"))) {
+      if (calledByCli && fs.existsSync(path.resolve(globalNodeModulesPath, "ncgen"))) {
         genConfigContent = genConfigContent.replace(
           /from\s+['"](ncgen)['"]/,
           `from "${globalNodeModulesPath}/$1"`

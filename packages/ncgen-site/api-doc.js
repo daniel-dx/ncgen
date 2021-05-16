@@ -19,10 +19,6 @@ Promise.all([
     mdContent = mdContent.replace(/### Functions[\s\S]*?###/, "###"); // rm Functions catalog
     mdContent = mdContent.replace(/## Functions[\s\S]*?##/, "##"); // rm Functions catalog
 
-    if (idx === 1) {
-      console.log(mdContent);
-    }
-
     const apiDocs = ["./docs/zh/API.md", "./docs/API.md"];
     apiDocs.forEach(apiDoc => {
       let apiDocConent = fs.readFileSync(path.resolve(apiDoc), "utf-8");
@@ -33,7 +29,7 @@ Promise.all([
         );
       } else if (idx === 1) {
         apiDocConent = apiDocConent.replace(
-          /## CommandType : <code>enum<\/code>[\s\S]*## api/,
+          /## generate\(config, options\)[\s\S]*## api/,
           `${mdContent}\n## api`
         );
       }
