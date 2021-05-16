@@ -206,12 +206,12 @@ describe("ncgen generate", () => {
     );
     expectFileExist(path.resolve(genProjectPath, "package.json"), true);
 
-    process.chdir(genProjectPath);
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
     await generate(ncgenConfigPath, {
       type: "s",
-      command: "add-component"
+      command: "add-component",
+      cwd: genProjectPath
     });
     expectFileExist(
       path.resolve(genProjectPath, "src/components/busi/HelloNcgen.vue"),
@@ -257,11 +257,11 @@ describe("ncgen generate", () => {
     );
     expectFileExist(path.resolve(genProjectPath, "package.json"), true);
 
-    process.chdir(genProjectPath);
     await generate(ncgenConfigPath, {
       type: "s",
       command: "add-component",
-      answers: { category: "busi", name: "hello ncgen" }
+      answers: { category: "busi", name: "hello ncgen" },
+      cwd: genProjectPath
     });
     expectFileExist(
       path.resolve(genProjectPath, "src/components/busi/HelloNcgen.vue"),
@@ -308,12 +308,12 @@ describe("ncgen generate", () => {
     );
     expectFileExist(path.resolve(genProjectPath, "package.json"), true);
 
-    process.chdir(genProjectPath);
     inquirer.prompt = questions =>
       Promise.resolve({ category: "busi", name: "hello ncgen" });
     await generate(ncgenConfig, {
       type: "s",
-      command: "add-component"
+      command: "add-component",
+      cwd: genProjectPath
     });
     expectFileExist(
       path.resolve(genProjectPath, "src/components/busi/HelloNcgen.vue"),

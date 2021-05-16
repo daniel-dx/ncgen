@@ -371,6 +371,8 @@ export async function generate(
 
   initContext();
 
+  if (options.cwd) data.cwd = path.resolve(options.cwd);
+
   // 获取代码生成配置文件
   let genConfig;
   if (_.isString(config)) {
@@ -405,10 +407,7 @@ export async function generate(
       const nodeModulesPath = path.resolve(path.dirname(module.path));
       genConfigContent = genConfigContent
         .replace(/from\s+['"](ncgen)['"]/, `from "${nodeModulesPath}"`)
-        .replace(
-          /require\(['"](ncgen)['"]\)/,
-          `require("${nodeModulesPath}")`
-        );
+        .replace(/require\(['"](ncgen)['"]\)/, `require("${nodeModulesPath}")`);
       fs.writeFileSync(filePath, genConfigContent, "utf8");
     }
     genConfig = require(filePath);

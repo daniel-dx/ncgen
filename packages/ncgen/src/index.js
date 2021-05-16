@@ -12,8 +12,9 @@ export const _ = lodash;
  * @param {(string|object)} config - Configuration file path or configuration object
  * @param {object} options - Options
  * @param {string} options.type - "m" (main command) or "s" (subcommand)
- * @param {string} options.command - The name of the executed subcommand. Only needed when type is "s"
- * @param {object} options.answers - Provided when you want to skip interactive questioning
+ * @param {string} [options.cwd] - Current working directory of the child process.
+ * @param {string} [options.command] - The name of the executed subcommand. Only needed when type is "s"
+ * @param {object} [options.answers] - Provided when you want to skip interactive questioning
  * @returns {promise} Promise
  * @example
  * const { generate } = require("ncgen"); // or import { generate } from "ncgen"

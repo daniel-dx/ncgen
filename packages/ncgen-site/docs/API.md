@@ -16,8 +16,9 @@ Call ncgen through node api form
 - config <code>string</code> | <code>object</code> - Configuration file path or configuration object
 - options <code>object</code> - Options
     - .type <code>string</code> - "m" (main command) or "s" (subcommand)
-    - .command <code>string</code> - The name of the executed subcommand. Only needed when type is "s"
-    - .answers <code>object</code> - Provided when you want to skip interactive questioning
+    - [.cwd] <code>string</code> - Current working directory of the child process.
+    - [.command] <code>string</code> - The name of the executed subcommand. Only needed when type is "s"
+    - [.answers] <code>object</code> - Provided when you want to skip interactive questioning
 
 **Example**  
 ```js
