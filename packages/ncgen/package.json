@@ -2,7 +2,7 @@
   "name": "ncgen",
   "version": "0.2.0",
   "repository": "https://github.com/daniel-dx/ncgen.git",
-  "author": "daniel.xiao <dxweixiao@tencent.com>",
+  "author": "daniel.xiao",
   "main": "lib/index.js",
   "license": "MIT",
   "publishConfig": {
