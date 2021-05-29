@@ -66,7 +66,7 @@ generate("path/to/ncgen-config.js", { type: "s", command: "add-component" });
 第一步：创建代码生成器项目
 
 ```sh
-$ npm init @ncgen/app
+$ npm init @ncgen/app # yarn create @ncgen/app
 ```
 
 第二步：按照你代码生成器的逻辑修改 `ncgen-config.js`
@@ -75,7 +75,7 @@ $ npm init @ncgen/app
 
 ```sh
 cd cook
-$ npm init @ncgen/app add-sub
+$ npm init @ncgen/app add-sub # yarn create @ncgen/app add-sub
 ```
 
 第三步：发布你的代码生成器

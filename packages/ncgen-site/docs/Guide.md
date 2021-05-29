@@ -66,7 +66,7 @@ Suppose you now want to develop a code generator tool called **cook**, you only 
 Step 1: Create a code generator project
 
 ```sh
-$ npm init @ncgen/app
+$ npm init @ncgen/app # yarn create @ncgen/app
 ```
 
 Step 2: Modify `ncgen-config.js` according to the logic of your code generator
@@ -75,7 +75,7 @@ Step 2: Modify `ncgen-config.js` according to the logic of your code generator
 
 ```sh
 cd cook
-$ npm init @ncgen/app add-sub
+$ npm init @ncgen/app add-sub  # yarn create @ncgen/app add-sub
 ```
 
 Step 3: Publish your code generator
