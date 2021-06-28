@@ -340,6 +340,24 @@ describe("ncgen generate", () => {
     fs.removeSync(genProjectPath);
   });
 
+  it(`ncgen: projectDirName handler`, async () => {
+    let { path: genProjectPath, name: projectName } = getGenProjectInfo(4);
+
+    const _ncgenConfig = _.cloneDeep(ncgenConfig)
+    _ncgenConfig.main.projectDirName = function() {
+      return this.$answers.projectName + 'dx'
+    }
+
+    await generate(_ncgenConfig, {
+      type: "m",
+      answers: { projectName, author: "daniel" }
+    });
+
+    expectFileExist(path.resolve(genProjectPath + 'dx'), true);
+
+    fs.removeSync(genProjectPath + 'dx');
+  });
+
   // restore
   afterEach(() => {
     inquirer.prompt = backup;

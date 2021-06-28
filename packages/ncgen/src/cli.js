@@ -121,6 +121,12 @@ function complete(completeMsg) {
   }
 }
 
+function handleProjectDirName(projectDirNameFn) {
+  if (_.isFunction(projectDirNameFn)) {
+    data.projectDirName = resolveValue(projectDirNameFn)
+  }
+}
+
 function checkConfig(config) {
   if (!data.isSub && !config.tmplSource)
     throw "main.tmplSource must not be null";
@@ -221,6 +227,9 @@ async function handleMain(config, genConfig, answers) {
     } else {
       await prompt(resolveValue(config.prompt));
     }
+
+    // 处理项目目录名称
+    await handleProjectDirName(config.projectDirName)
 
     // clone 资源
     await cloneResource(resolveValue(config.tmplSource));

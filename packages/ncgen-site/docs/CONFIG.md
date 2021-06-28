@@ -58,6 +58,24 @@ In the `prompt` of `main`, there is a question item with the attribute `projectN
 }
 ```
 
+### projectDirName
+
+> function
+
+Customize the project directory name.
+
+By default, the project directory name uses the value of projectName in the format of connecting lowercase words. ( If the value of projectName is `Hello World`, the project directory name is `hello-world` ) If you don’t want to use this format, you can customize the project directory name through this method
+
+```js
+{
+  main: {
+    projectDirName() {
+      return this.$answers.projectName
+    },
+  }
+}
+```
+
 ### tmplSource
 
 > string | function

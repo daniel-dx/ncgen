@@ -58,6 +58,24 @@
 }
 ```
 
+### projectDirName
+
+> function
+
+自定义项目目录名称。
+
+项目目录名称默认使用 projectName 的值按单词小写连线的格式。（如 projectName 的值为 `Hello World`，则项目目录名称为 `hello-world`）如果不想使用这种格式，则可以通过该方法自定义项目目录名称
+
+```js
+{
+  main: {
+    projectDirName() {
+      return this.$answers.projectName
+    },
+  }
+}
+```
+
 ### tmplSource
 
 > string | function

@@ -11,7 +11,8 @@ export const answers = {
 
 export const data = {
   isSub: false,
-  cwd: '.'
+  cwd: '.',
+  projectDirName: null
 };
 
 export function getFnContext() {
@@ -29,7 +30,7 @@ export function getFnContext() {
 export function getProjectRootPath() {
   return path.resolve(
     data.cwd,
-    !data.isSub ? transformStr(answers.projectName)["kebabCase"] : ""
+    !data.isSub ? (data.projectDirName || transformStr(answers.projectName)["kebabCase"]) : ""
   );
 }
 
@@ -43,5 +44,6 @@ export function initContext() {
   Object.keys(answers).forEach(key => delete answers[key]);
   answers.projectName = "";
   data.isSub = false;
-  data.cwd = '.'
+  data.cwd = '.';
+  data.projectDirName = null;
 }
