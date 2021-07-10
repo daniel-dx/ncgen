@@ -41,21 +41,28 @@ function cloneResource(tmplSource, isTemp = false) {
   } else {
     // 项目模板在远程git
     const spinner = ora("Downloading").start();
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const emitter = degit(tmplSource, {
         cache: false,
         force: true,
-        verbose: true
+        verbose: true,
+        mode: 'git'
       });
 
       emitter.on("info", info => {
         debug(info.message);
       });
 
-      emitter.clone(destPath).then(() => {
-        spinner.stop();
-        resolve("done");
-      });
+      emitter
+        .clone(destPath)
+        .then(() => {
+          spinner.stop();
+          resolve("done");
+        })
+        .catch(error => {
+          spinner.stop();
+          reject(error.message);
+        });
     });
   }
 }
@@ -123,7 +130,7 @@ function complete(completeMsg) {
 
 function handleProjectDirName(projectDirNameFn) {
   if (_.isFunction(projectDirNameFn)) {
-    data.projectDirName = resolveValue(projectDirNameFn)
+    data.projectDirName = resolveValue(projectDirNameFn);
   }
 }
 
@@ -229,7 +236,7 @@ async function handleMain(config, genConfig, answers) {
     }
 
     // 处理项目目录名称
-    await handleProjectDirName(config.projectDirName)
+    await handleProjectDirName(config.projectDirName);
 
     // clone 资源
     await cloneResource(resolveValue(config.tmplSource));
