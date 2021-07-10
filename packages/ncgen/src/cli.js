@@ -45,8 +45,7 @@ function cloneResource(tmplSource, isTemp = false) {
       const emitter = degit(tmplSource, {
         cache: false,
         force: true,
-        verbose: true,
-        mode: 'git'
+        verbose: true
       });
 
       emitter.on("info", info => {
@@ -407,25 +406,38 @@ export async function generate(
       "configuration",
       md5(genConfigContent) + ".js"
     );
+
     // 命令行调用，将 import "ncgen" 替换成引用全局的模块路径
+    let relativePath;
     if (calledByCli) {
       const { stdout: globalNodeModulesPath } = execa.commandSync(
         "npm root -g"
       );
-      genConfigContent = genConfigContent
-        .replace(/from\s+['"](ncgen)['"]/, `from "${globalNodeModulesPath}/$1"`)
-        .replace(
-          /require\(['"](ncgen)['"]\)/,
-          `require("${globalNodeModulesPath}/$1")`
-        );
-      fs.writeFileSync(filePath, genConfigContent, "utf8");
+      relativePath = path.relative(
+        path.dirname(filePath),
+        globalNodeModulesPath
+      );
+      debug(
+        "[cli mode] require ncgen module path in ncgen-config:",
+        relativePath
+      );
     } else {
       const nodeModulesPath = path.resolve(path.dirname(module.path));
-      genConfigContent = genConfigContent
-        .replace(/from\s+['"](ncgen)['"]/, `from "${nodeModulesPath}"`)
-        .replace(/require\(['"](ncgen)['"]\)/, `require("${nodeModulesPath}")`);
-      fs.writeFileSync(filePath, genConfigContent, "utf8");
+      relativePath = path.relative(
+        path.dirname(filePath),
+        path.dirname(nodeModulesPath)
+      );
+      debug(
+        "[api mode] require ncgen module path in ncgen-config:",
+        relativePath
+      );
     }
+
+    genConfigContent = genConfigContent
+      .replace(/from\s+['"](ncgen)['"]/, `from "${relativePath}/$1"`)
+      .replace(/require\(['"](ncgen)['"]\)/, `require("${relativePath}/$1")`);
+    fs.writeFileSync(filePath, genConfigContent, "utf8");
+
     genConfig = require(filePath);
   } else {
     genConfig = config;
