@@ -433,6 +433,7 @@ export async function generate(
       );
     }
 
+    relativePath = relativePath.replace(/\\/g, "/"); // window 环境下避免路径被转义
     genConfigContent = genConfigContent
       .replace(/from\s+['"](ncgen)['"]/, `from "${relativePath}/$1"`)
       .replace(/require\(['"](ncgen)['"]\)/, `require("${relativePath}/$1")`);
