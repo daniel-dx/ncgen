@@ -41,7 +41,7 @@ function cloneResource(tmplSource, isTemp = false) {
   } else {
     // 项目模板在远程git
     const spinner = ora("Downloading").start();
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const emitter = degit(tmplSource, {
         cache: false,
         force: true,
@@ -52,10 +52,16 @@ function cloneResource(tmplSource, isTemp = false) {
         debug(info.message);
       });
 
-      emitter.clone(destPath).then(() => {
-        spinner.stop();
-        resolve("done");
-      });
+      emitter
+        .clone(destPath)
+        .then(() => {
+          spinner.stop();
+          resolve("done");
+        })
+        .catch(error => {
+          spinner.stop();
+          reject(error.message);
+        });
     });
   }
 }
@@ -123,7 +129,7 @@ function complete(completeMsg) {
 
 function handleProjectDirName(projectDirNameFn) {
   if (_.isFunction(projectDirNameFn)) {
-    data.projectDirName = resolveValue(projectDirNameFn)
+    data.projectDirName = resolveValue(projectDirNameFn);
   }
 }
 
@@ -229,7 +235,7 @@ async function handleMain(config, genConfig, answers) {
     }
 
     // 处理项目目录名称
-    await handleProjectDirName(config.projectDirName)
+    await handleProjectDirName(config.projectDirName);
 
     // clone 资源
     await cloneResource(resolveValue(config.tmplSource));
@@ -400,25 +406,38 @@ export async function generate(
       "configuration",
       md5(genConfigContent) + ".js"
     );
+
     // 命令行调用，将 import "ncgen" 替换成引用全局的模块路径
+    let relativePath;
     if (calledByCli) {
       const { stdout: globalNodeModulesPath } = execa.commandSync(
         "npm root -g"
       );
-      genConfigContent = genConfigContent
-        .replace(/from\s+['"](ncgen)['"]/, `from "${globalNodeModulesPath}/$1"`)
-        .replace(
-          /require\(['"](ncgen)['"]\)/,
-          `require("${globalNodeModulesPath}/$1")`
-        );
-      fs.writeFileSync(filePath, genConfigContent, "utf8");
+      relativePath = path.relative(
+        path.dirname(filePath),
+        globalNodeModulesPath
+      );
+      debug(
+        "[cli mode] require ncgen module path in ncgen-config:",
+        relativePath
+      );
     } else {
       const nodeModulesPath = path.resolve(path.dirname(module.path));
-      genConfigContent = genConfigContent
-        .replace(/from\s+['"](ncgen)['"]/, `from "${nodeModulesPath}"`)
-        .replace(/require\(['"](ncgen)['"]\)/, `require("${nodeModulesPath}")`);
-      fs.writeFileSync(filePath, genConfigContent, "utf8");
+      relativePath = path.relative(
+        path.dirname(filePath),
+        path.dirname(nodeModulesPath)
+      );
+      debug(
+        "[api mode] require ncgen module path in ncgen-config:",
+        relativePath
+      );
     }
+
+    genConfigContent = genConfigContent
+      .replace(/from\s+['"](ncgen)['"]/, `from "${relativePath}/$1"`)
+      .replace(/require\(['"](ncgen)['"]\)/, `require("${relativePath}/$1")`);
+    fs.writeFileSync(filePath, genConfigContent, "utf8");
+
     genConfig = require(filePath);
   } else {
     genConfig = config;
