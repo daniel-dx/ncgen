@@ -1,6 +1,6 @@
 {
   "name": "ncgen",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "repository": "https://github.com/daniel-dx/ncgen.git",
   "author": "daniel.xiao",
   "main": "lib/index.js",
