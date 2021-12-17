@@ -40,6 +40,10 @@ export function getLocationOfTheProjectClone() {
     : path.resolve(homePath, "temp_clone");
 }
 
+export function getLocationOfArchive() {
+  return path.resolve(homePath, "temp_archive")
+}
+
 export function initContext() {
   Object.keys(answers).forEach(key => delete answers[key]);
   answers.projectName = "";

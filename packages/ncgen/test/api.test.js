@@ -343,19 +343,39 @@ describe("ncgen generate", () => {
   it(`ncgen: projectDirName handler`, async () => {
     let { path: genProjectPath, name: projectName } = getGenProjectInfo(4);
 
-    const _ncgenConfig = _.cloneDeep(ncgenConfig)
+    const _ncgenConfig = _.cloneDeep(ncgenConfig);
     _ncgenConfig.main.projectDirName = function() {
-      return this.$answers.projectName + 'dx'
-    }
+      return this.$answers.projectName + "dx";
+    };
 
     await generate(_ncgenConfig, {
       type: "m",
       answers: { projectName, author: "daniel" }
     });
 
-    expectFileExist(path.resolve(genProjectPath + 'dx'), true);
+    expectFileExist(path.resolve(genProjectPath + "dx"), true);
 
-    fs.removeSync(genProjectPath + 'dx');
+    fs.removeSync(genProjectPath + "dx");
+  });
+
+  it(`ncgen: fetch template project from remote zip`, async () => {
+    let { path: genProjectPath, name: projectName } = getGenProjectInfo(5);
+
+    const _ncgenConfig = _.cloneDeep(ncgenConfig);
+    _ncgenConfig.main.tmplSource =
+      "https://media.githubusercontent.com/media/daniel-dx/vue3-ncgen-demo/demo/project-admin/demo.zip";
+
+    await generate(_ncgenConfig, {
+      type: "m",
+      answers: { projectName, author: "daniel" }
+    });
+
+    expectFileContain(path.resolve(genProjectPath, "package.json"), [
+      `"name": "test-demo-5"`,
+      `"author": "daniel"`
+    ]);
+
+    fs.removeSync(genProjectPath + "dx");
   });
 
   // restore

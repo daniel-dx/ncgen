@@ -12,6 +12,8 @@ import execa from "execa";
 import ora from "ora";
 import updateNotifier from "update-notifier";
 import requireText from "require-text";
+import extract from "extract-zip";
+import http from "axios/lib/adapters/http.js";
 
 import { debug, log } from "./utils";
 import pkg from "../package.json";
@@ -22,7 +24,8 @@ import {
   getLocationOfTheProjectClone,
   homePath,
   getFnContext,
-  initContext
+  initContext,
+  getLocationOfArchive
 } from "./context";
 
 const CommandType = {
@@ -30,7 +33,7 @@ const CommandType = {
   SUB: "s"
 };
 
-function cloneResource(tmplSource, isTemp = false) {
+async function cloneResource(tmplSource, isTemp = false) {
   const destPath = path.resolve(
     getProjectRootPath(),
     isTemp ? getLocationOfTheProjectClone() : ""
@@ -38,6 +41,32 @@ function cloneResource(tmplSource, isTemp = false) {
   if (fs.existsSync(tmplSource)) {
     // 项目模板在本地
     return fs.copy(tmplSource, destPath);
+  } else if ([".zip"].indexOf(path.extname(tmplSource).toLowerCase()) >= 0) {
+    // 远端压缩包
+    const archiveName =
+      md5(tmplSource) + path.extname(tmplSource).toLowerCase();
+    const archivePath = path.resolve(getLocationOfArchive(), archiveName);
+
+    if (!fs.existsSync(archivePath)) {
+      // 没有缓存则下载
+      const response = await axios({
+        method: "GET",
+        url: tmplSource,
+        responseType: "stream",
+        adapter: http // 使用这个 adapter，response.data.pipe 才有效
+      });
+      response.data.pipe(fs.createWriteStream(archivePath));
+      await new Promise((resolve, reject) => {
+        response.data.on("end", () => {
+          resolve();
+        });
+        response.data.on("error", () => {
+          reject();
+        });
+      });
+    }
+
+    return extract(archivePath, { dir: destPath });
   } else {
     // 项目模板在远程git
     const spinner = ora("Downloading").start();
@@ -299,12 +328,11 @@ async function handleSubcommand(config, answers) {
 function initHomeDir() {
   fs.ensureDirSync(path.resolve(homePath, "configuration"));
   fs.ensureDirSync(path.resolve(homePath, "temp_clone"));
+  fs.ensureDirSync(path.resolve(homePath, "temp_archive"));
 }
 
 export async function cli(args) {
   checkVersion();
-
-  initHomeDir();
 
   program.version(pkg.version, "-V, --version").usage(
     `
@@ -481,3 +509,5 @@ function checkVersion() {
     notifier.notify();
   }
 }
+
+initHomeDir();
