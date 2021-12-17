@@ -108,3 +108,4 @@ test/temp
 lib
 package-lock.json
 test-demo-*
+packages/ncgen/.DS_Store
