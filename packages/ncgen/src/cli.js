@@ -237,8 +237,10 @@ async function addFiles(addFilesConfig) {
   return Promise.all(
     _.map(addFilesConfig, (val, toPath) => {
       const content = resolveValue(val);
+      const targetPath = path.resolve(getProjectRootPath(), toPath)
+      fs.ensureFileSync(targetPath)
       return fs.writeFile(
-        path.resolve(getProjectRootPath(), toPath),
+        targetPath,
         content,
         "utf8"
       );
